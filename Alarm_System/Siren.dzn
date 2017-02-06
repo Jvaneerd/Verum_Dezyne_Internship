@@ -1,0 +1,8 @@
+import ISiren.dzn;
+
+component Siren {
+	provides ISiren iSiren;
+	behaviour {
+		
+	}
+}

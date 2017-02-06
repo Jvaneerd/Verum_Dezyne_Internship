@@ -1,0 +1,9 @@
+interface ILED {
+	in void setGreen();
+	in void setYellow();
+	in void setRed();
+	
+	behaviour {
+		on setGreen, setYellow, setRed: {}
+	}
+}

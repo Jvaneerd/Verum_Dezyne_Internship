@@ -1,0 +1,7 @@
+import ISensor.dzn;
+
+component Sensor {
+	provides ISensor iSensor;
+	behaviour {
+	}
+}

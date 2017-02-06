@@ -1,0 +1,5 @@
+import ITimer.dzn;
+
+component Timer {
+	provides ITimer iTimer;
+}

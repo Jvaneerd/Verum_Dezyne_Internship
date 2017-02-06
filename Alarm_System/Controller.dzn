@@ -1,0 +1,55 @@
+import IController.dzn;
+import ISensor.dzn;
+import ILED.dzn;
+import ISiren.dzn;
+import ITimer.dzn;
+
+component Controller {
+	provides IController iController;
+	requires ISensor iSensor;
+	requires ILED iLED;
+	requires ISiren iSiren;
+	requires ITimer iTimer;
+	
+	behaviour {
+		enum State { Unarmed, Armed, Alarming };
+		State state = State.Unarmed;
+		
+		[state.Unarmed] {
+			on iController.validPincode(): {
+				iSensor.turnOn();
+				state = State.Armed;
+				iLED.setYellow();
+			}
+			on iSensor.trigger(): {}
+		}
+		
+		[state.Armed] {
+			on iSensor.trigger(): {
+				iSensor.turnOff();
+				state = State.Alarming;
+				iTimer.start($30000$);
+				iLED.setRed();
+			}
+			on iController.validPincode(): {
+				iSensor.turnOff();
+				state = State.Unarmed;
+				iLED.setGreen();
+			}
+		}
+		
+		[state.Alarming] {
+			on iController.validPincode(): {
+				iSensor.turnOn();
+				state = State.Armed;
+				iTimer.cancel();
+				iSiren.turnOff();
+				iLED.setYellow();
+			}
+			on iTimer.timeout(): {
+				iSiren.turnOn();
+			}
+			on iSensor.trigger(): illegal;
+		}
+	}
+}
