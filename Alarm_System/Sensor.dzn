@@ -1,0 +1,34 @@
+interface ISensor {
+	in void turnOn();
+	in void turnOff();
+
+	out void trigger();
+
+	behaviour {
+		enum State { Off, Sensing, Triggered };
+		State state = State.Off;
+
+		[state.Off] {
+			on turnOn: state = State.Sensing;
+			on turnOff: illegal;
+		}
+		[state.Sensing] {
+			on turnOn: illegal;
+			on turnOff: state = State.Off;
+			on optional: {
+				trigger;
+				state = State.Triggered;
+			}
+		}
+		[state.Triggered] {
+			on turnOn: illegal;
+			on turnOff: state = State.Off;
+		}
+	}
+}
+
+component Sensor {
+	provides ISensor iSensor;
+	behaviour {
+	}
+}
