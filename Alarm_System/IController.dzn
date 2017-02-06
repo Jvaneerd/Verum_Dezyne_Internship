@@ -1,7 +1,0 @@
-interface IController {
-	in void validPincode();
-	
-	behaviour {
-		on validPincode: {}
-	}
-}

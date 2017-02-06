@@ -1,4 +1,3 @@
-import IController.dzn;
 import Controller.dzn;
 import LED.dzn;
 import Siren.dzn;

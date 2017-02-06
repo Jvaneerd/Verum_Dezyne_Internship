@@ -1,8 +1,15 @@
-import IController.dzn;
-import ISensor.dzn;
-import ILED.dzn;
-import ISiren.dzn;
-import ITimer.dzn;
+import Sensor.dzn;
+import LED.dzn;
+import Siren.dzn;
+import Timer.dzn;
+
+interface IController {
+	in void validPincode();
+
+	behaviour {
+		on validPincode: {}
+	}
+}
 
 component Controller {
 	provides IController iController;
