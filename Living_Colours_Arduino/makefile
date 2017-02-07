@@ -24,12 +24,10 @@ MONITOR_BAUDRATE  = 115200
 
 ### AVR_TOOLS_DIR
 ### Path to the AVR tools directory such as avr-gcc, avr-g++, etc.
-### On OS X with `homebrew`:
 AVR_TOOLS_DIR     = /usr/local
 
 ### AVRDUDE
 ### Path to avrdude directory.
-### On OS X with `homebrew`:
 AVRDUDE          = /usr/local/bin/avrdude
 
 ### CFLAGS_STD
