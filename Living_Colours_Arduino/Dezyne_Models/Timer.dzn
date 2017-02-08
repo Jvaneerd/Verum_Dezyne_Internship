@@ -1,0 +1,25 @@
+interface ITimer {
+	extern long_integer $long$;
+	in void start(long_integer ms);
+	in void cancel();
+	out void timeout();
+	
+	behaviour {
+		enum State { Idle, Running };
+		State state = State.Idle;
+		
+		[state == State.Idle] {
+			on start: state = State.Running;
+			on cancel: {}
+		} 
+		
+		[state == State.Running] {
+			on start: illegal;
+			on cancel: state = State.Idle;
+			on inevitable: {
+				state = State.Idle;
+				timeout;
+			}
+		}
+	}
+}

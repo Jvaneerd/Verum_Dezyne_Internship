@@ -1,0 +1,11 @@
+interface IRGBLed {
+	in void setRed();
+	in void setGreen();
+	in void setBlue();
+	
+	behaviour {
+		on setRed: {}
+		on setGreen: {}
+		on setBlue: {}
+	}
+}

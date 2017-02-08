@@ -1,0 +1,28 @@
+interface IPresetter {
+	in void toggle();
+	behaviour {
+		on toggle: {}
+	}
+}
+
+component Presetter {
+	provides IPresetter iPresetter;
+	
+	behaviour {
+		enum Modes { One, Two, Three };
+		
+		Modes mode = Modes.One;
+		
+		on iPresetter.toggle(): {
+			[mode == Modes.One] {
+				mode = Modes.Two;
+			}
+			[mode == Modes.Two] {
+				mode = Modes.Three;
+			}
+			[mode == Modes.Three] {
+				mode = Modes.One;
+			}
+		}
+	}
+}

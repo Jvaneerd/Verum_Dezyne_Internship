@@ -1,0 +1,29 @@
+interface IMixer {
+	in void toggle();
+	
+	behaviour {
+		on toggle: {}
+	}
+}
+
+component Mixer {
+	provides IMixer iMixer;
+
+	behaviour {
+		enum State { MixingRed, MixingGreen, MixingBlue };
+
+		State state = State.MixingRed;
+
+		on iMixer.toggle(): {
+			[state == State.MixingRed] {
+				state = State.MixingGreen;
+			}
+			[state == State.MixingGreen] {
+				state = State.MixingBlue;
+			}
+			[state == State.MixingBlue] {
+				state = State.MixingRed;
+			}
+		}
+	}
+}

@@ -1,0 +1,80 @@
+import RGBLed.dzn;
+import DemoMode.dzn;
+import Mixer.dzn;
+import Presetter.dzn;
+
+interface IController {
+	in void begin();
+	in void mixButtonPressed();
+	in void presetButtonPressed();
+	
+	behaviour {
+		bool initialized = false;
+		
+		on begin: {
+			[!initialized] initialized = true;
+			[initialized] illegal;
+		}
+		
+		[initialized] {
+			on mixButtonPressed: {}
+			on presetButtonPressed: {}
+		}
+		
+		[!initialized] {
+			on mixButtonPressed: illegal;
+			on presetButtonPressed: illegal;
+		}
+	}
+}
+
+component Controller {
+	provides IController iController;
+	requires IDemoMode iDemoMode;
+	requires IMixer iMixer;
+	requires IPresetter iPresetter;
+	
+	behaviour {
+		enum State { Demo, Mixing, Presets };
+		bool initialized = false;
+		
+		State state = State.Demo;
+		
+		on iController.begin(): {
+			[initialized] illegal;
+			[!initialized] {
+				initialized = true;
+				iDemoMode.start();
+			}
+		}
+		
+		[initialized] {
+			on iController.mixButtonPressed(): {
+				[state == State.Mixing] {
+					iMixer.toggle();
+				}
+				[state == State.Demo] {
+					iDemoMode.stop();
+					state = State.Mixing;
+				} 
+				[state == State.Presets] {
+					state = State.Mixing;
+				}
+			} 
+		
+			on iController.presetButtonPressed(): {
+				[state == State.Presets] {
+					iPresetter.toggle();
+				}
+				[state == State.Demo] {
+					iDemoMode.stop();
+					state = State.Presets;
+				} 
+				[state == State.Mixing] {
+					state = State.Presets;
+				}
+			}
+		}
+		
+	}
+}

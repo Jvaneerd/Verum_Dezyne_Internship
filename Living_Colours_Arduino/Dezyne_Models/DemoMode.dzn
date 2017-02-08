@@ -1,0 +1,68 @@
+import Timer.dzn;
+import RGBLed.dzn;
+
+interface IDemoMode {
+	in void start();
+	in void stop();
+	
+	behaviour {
+		enum State { Red, Green, Blue };
+		State state = State.Red;
+		bool isRunning = false;
+		on start: {
+			[isRunning] illegal;
+			[!isRunning] isRunning = true;
+		} 
+		
+		on stop: {
+			[isRunning] isRunning = false;
+			[!isRunning] illegal;
+		}
+	}
+}
+
+component DemoMode {
+	provides IDemoMode iDemoMode;
+	requires ITimer iTimer;
+	requires IRGBLed iRGBLed;
+	
+	behaviour {
+		enum State { Red, Green, Blue };
+		State state = State.Red;
+		bool isRunning = false;
+		
+		on iDemoMode.start(): {
+			[!isRunning] {
+				isRunning = true;
+				iRGBLed.setRed();
+				iTimer.start($1000$);
+			}
+		} 
+		
+		on iDemoMode.stop(): {
+			[isRunning] {
+				isRunning = false;
+				iTimer.cancel();
+			}
+		}
+		
+		on iTimer.timeout(): {
+			[isRunning] {
+				[state == State.Red] {
+					state = State.Green;
+					iTimer.start($1000$);
+				} 
+				
+				[state == State.Green] {
+					state = State.Blue;
+					iTimer.start($1000$);
+				}
+				
+				[state == State.Blue] {
+					state = State.Red;
+					iTimer.start($1000$);
+				} 
+			}
+		}
+	}
+}
