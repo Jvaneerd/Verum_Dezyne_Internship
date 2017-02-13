@@ -4,37 +4,8 @@
 #include <dzn/locator.h>
 
 #include "../Generated/LivingColours.h"
-
-#define PIN_RED 11
-#define PIN_GREEN 6
-#define PIN_BLUE 5
-
-volatile bool timeout = false;
-
-void startTimer(ITimer* self, long ms) {
-  cli(); // stop interrupts
-
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TCNT1 = 0;
-
-  OCR1A = 15624;
-
-  TCCR1B |= _BV(WGM12) | _BV(CS12) | _BV(CS10);
-  TIMSK1 |= _BV(OCIE1A);
-
-  sei();
-}
-
-void clearTimer(ITimer* self) {
-  cli();
-  TIMSK1 &= ~_BV(OCIE1A);
-  sei();
-}
-
-ISR(TIMER1_COMPA_vect){
-  timeout = true;
-}
+#include "rgbLed.h"
+#include "Timer.h"
 
 void arduinoSetup() {
   pinMode(PIN_RED, OUTPUT);
@@ -44,24 +15,6 @@ void arduinoSetup() {
   pinMode(PIN_ILLEGAL, OUTPUT); // DEFINED IN dzn/runtime.h
   digitalWrite(PIN_DEBUG, LOW);
   digitalWrite(PIN_ILLEGAL, LOW);
-}
-
-void setColor(int red, int green, int blue) {
-  analogWrite(PIN_RED, red);
-  analogWrite(PIN_GREEN, green);
-  analogWrite(PIN_BLUE, blue);
-}
-
-void rgb_setRed(IRGBLed* self) {
-  setColor(255, 0, 0);
-}
-
-void rgb_setGreen(IRGBLed* self) {
-  setColor(0, 255, 0);
-}
-
-void rgb_setBlue(IRGBLed* self) {
-  setColor(0, 0, 255);
 }
 
 int main() {
