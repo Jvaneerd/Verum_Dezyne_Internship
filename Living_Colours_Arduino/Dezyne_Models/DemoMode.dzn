@@ -50,19 +50,36 @@ component DemoMode {
 			[isRunning] {
 				[state == State.Red] {
 					state = State.Green;
+					iRGBLed.setGreen();
 					iTimer.start($1000$);
 				} 
 				
 				[state == State.Green] {
 					state = State.Blue;
+					iRGBLed.setBlue();
 					iTimer.start($1000$);
 				}
 				
 				[state == State.Blue] {
 					state = State.Red;
+					iRGBLed.setRed();
 					iTimer.start($1000$);
 				} 
 			}
 		}
+	}
+}
+
+component DemoSystem {
+	provides IDemoMode iDemoMode;
+	requires ITimer iTimer;
+	requires IRGBLed iRGBLed;
+	
+	system {
+		DemoMode demoMode;
+		
+		iDemoMode<=>demoMode.iDemoMode;
+		demoMode.iRGBLed<=>iRGBLed;
+		demoMode.iTimer<=>iTimer;
 	}
 }

@@ -28,7 +28,7 @@ AVR_TOOLS_DIR     = /usr/local
 
 ### AVRDUDE
 ### Path to avrdude directory.
-AVRDUDE          = /usr/local/bin/avrdude
+AVRDUDE           = /usr/local/bin/avrdude
 
 ### CFLAGS_STD
 ### Set the C standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cflags_std)
@@ -40,11 +40,15 @@ CXXFLAGS_STD      = -std=gnu++11
 
 ### CXXFLAGS
 ### Flags you might want to set for debugging purpose. Comment to stop.
-CXXFLAGS         += -pedantic -Wall -Wextra
+CFLAGS         	 += -Ilib -DDZN_TINY
+
+### CXXFLAGS
+### Flags you might want to set for debugging purpose. Comment to stop.
+CXXFLAGS         += -Ilib -DDZN_TINY
 
 ### MONITOR_PORT
 ### The port your board is connected to. Using an '*' tries all the ports and finds the right one.
-MONITOR_PORT      = /dev/tty.usbmodem15
+MONITOR_PORT      = /dev/tty.usbmodem*
 
 ### CURRENT_DIR
 ### Do not touch - used for binaries path
@@ -53,6 +57,14 @@ CURRENT_DIR       = $(shell basename $(CURDIR))
 ### OBJDIR
 ### This is where you put the binaries you just compile using 'make'
 OBJDIR            = $(PROJECT_DIR)/bin/$(BOARD_TAG)/$(CURRENT_DIR)
+
+### SRCDIR
+### This is where the source code for the project may be found
+LOCAL_C_SRCS			= $(wildcard src/Generated/*.c)
+LOCAL_C_SRCS		 += $(wildcard src/Handwritten/*.c)
+LOCAL_C_SRCS     += $(wildcard $(USER_LIB_PATH)/*.c)
+LOCAL_CPP_SRCS    = $(wildcard src/Handwritten/*.cpp)
+
 
 ### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
 include $(ARDMK_DIR)/Arduino.mk

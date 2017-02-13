@@ -78,3 +78,23 @@ component Controller {
 		
 	}
 }
+
+component LivingColours {
+	provides IController iController;
+	requires ITimer iTimer;
+	requires IRGBLed iRGBLed;
+	
+	system {
+		Controller controller;
+		DemoSystem demoSystem;
+		Mixer mixer;
+		Presetter presetter;
+		
+		iController<=>controller.iController;
+		controller.iDemoMode<=>demoSystem.iDemoMode;
+		controller.iMixer<=>mixer.iMixer;
+		controller.iPresetter<=>presetter.iPresetter;
+		demoSystem.iRGBLed<=>iRGBLed;
+		demoSystem.iTimer<=>iTimer;
+	}
+}
