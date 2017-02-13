@@ -1,28 +1,75 @@
+enum Presets { One, Two, Three };
+
 interface IPresetter {
+	in void start();
+	in void stop();
 	in void toggle();
+	
 	behaviour {
-		on toggle: {}
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
+		on toggle: {
+			[!isRunning] illegal;
+			[isRunning] {}
+		}
+	}
+}
+
+interface IPresetSelector {
+	in void selectPreset();
+	in void stop();
+	
+	behaviour {
+		on selectPreset: {}
+		on stop: {}
 	}
 }
 
 component Presetter {
 	provides IPresetter iPresetter;
+	requires IPresetSelector iPresetSelector;
 	
 	behaviour {
-		enum Modes { One, Two, Three };
+		Presets preset = Presets.One;
+		bool isRunning = false;
 		
-		Modes mode = Modes.One;
+		on iPresetter.start(): {
+			[!isRunning] {
+				isRunning = true;
+				preset = Presets.One;
+				iPresetSelector.selectPreset();
+			}
+		}
 		
+		on iPresetter.stop(): {
+			[isRunning] {
+				isRunning = false;
+				iPresetSelector.stop();
+			} 
+		}
+			
 		on iPresetter.toggle(): {
-			[mode == Modes.One] {
-				mode = Modes.Two;
-			}
-			[mode == Modes.Two] {
-				mode = Modes.Three;
-			}
-			[mode == Modes.Three] {
-				mode = Modes.One;
-			}
+			[isRunning] {
+				[preset == Presets.One] {
+					preset = Presets.Two;
+					iPresetSelector.selectPreset();
+				}
+				[preset == Presets.Two] {
+					preset = Presets.Three;
+					iPresetSelector.selectPreset();
+				}
+				[preset == Presets.Three] {
+					preset = Presets.One;
+					iPresetSelector.selectPreset();
+				}
+			} 
 		}
 	}
 }

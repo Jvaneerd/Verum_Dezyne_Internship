@@ -58,6 +58,7 @@ component Controller {
 					state = State.Mixing;
 				} 
 				[state == State.Presets] {
+					iPresetter.stop();
 					state = State.Mixing;
 				}
 			} 
@@ -68,9 +69,11 @@ component Controller {
 				}
 				[state == State.Demo] {
 					iDemoMode.stop();
+					iPresetter.start();
 					state = State.Presets;
 				} 
 				[state == State.Mixing] {
+					iPresetter.start();
 					state = State.Presets;
 				}
 			}
@@ -83,6 +86,7 @@ component LivingColours {
 	provides IController iController;
 	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
+	requires IPresetSelector iPresetSelector;
 	
 	system {
 		Controller controller;
@@ -96,5 +100,6 @@ component LivingColours {
 		controller.iPresetter<=>presetter.iPresetter;
 		demoSystem.iRGBLed<=>iRGBLed;
 		demoSystem.iTimer<=>iTimer;
+		presetter.iPresetSelector<=>iPresetSelector;
 	}
 }
