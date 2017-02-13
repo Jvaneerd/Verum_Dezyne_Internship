@@ -40,8 +40,8 @@ void arduinoSetup() {
   pinMode(PIN_RED, OUTPUT);
   pinMode(PIN_GREEN, OUTPUT);
   pinMode(PIN_BLUE, OUTPUT);
-  pinMode(PIN_DEBUG, OUTPUT);
-  pinMode(PIN_ILLEGAL, OUTPUT);
+  pinMode(PIN_DEBUG, OUTPUT); // DEFINED IN dzn/runtime.h
+  pinMode(PIN_ILLEGAL, OUTPUT); // DEFINED IN dzn/runtime.h
   digitalWrite(PIN_DEBUG, LOW);
   digitalWrite(PIN_ILLEGAL, LOW);
 }
