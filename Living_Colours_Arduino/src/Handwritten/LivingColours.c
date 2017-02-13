@@ -64,10 +64,6 @@ void rgb_setBlue(IRGBLed* self) {
   setColor(0, 0, 255);
 }
 
-void timer_timeout(ITimer* self) {
-  timeout = false; //handled in Dezyne
-}
-
 int main() {
   runtime dezyne_runtime;
   runtime_init(&dezyne_runtime);
@@ -86,12 +82,11 @@ int main() {
 
   lc.iController->in.begin(lc.iController);
 
-  while(1) {
+  while(1) {  //forever
     if(timeout) {
       lc.iTimer->out.timeout(lc.iTimer);
       timeout = false;
     }
-    //forever
   }
 
   return 0;
