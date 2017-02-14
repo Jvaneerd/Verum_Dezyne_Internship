@@ -13,4 +13,8 @@ void rgb_setRed(IRGBLed* self);
 void rgb_setGreen(IRGBLed* self);
 void rgb_setBlue(IRGBLed* self);
 
+void rgb_setSpecificRed(IRGBLed* self, int value);
+void rgb_setSpecificGreen(IRGBLed* self, int value);
+void rgb_setSpecificBlue(IRGBLed* self, int value);
+
 #endif //RGBLED_H

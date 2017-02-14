@@ -17,3 +17,15 @@ void rgb_setGreen(IRGBLed* self) {
 void rgb_setBlue(IRGBLed* self) {
   setColor(0, 0, 255);
 }
+
+void rgb_setSpecificRed(IRGBLed* self, int value) {
+  analogWrite(PIN_RED, value);
+}
+
+void rgb_setSpecificGreen(IRGBLed* self, int value) {
+  analogWrite(PIN_GREEN, value);
+}
+
+void rgb_setSpecificBlue(IRGBLed* self, int value) {
+  analogWrite(PIN_BLUE, value);
+}
