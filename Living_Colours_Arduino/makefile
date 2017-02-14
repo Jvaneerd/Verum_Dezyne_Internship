@@ -38,7 +38,7 @@ CFLAGS_STD        = -std=gnu11
 ### Set the C++ standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cxxflags_std)
 CXXFLAGS_STD      = -std=gnu++11
 
-### CXXFLAGS
+### CFLAGS
 ### Flags you might want to set for debugging purpose. Comment to stop.
 CFLAGS         	 += -Ilib -DDZN_TINY
 
