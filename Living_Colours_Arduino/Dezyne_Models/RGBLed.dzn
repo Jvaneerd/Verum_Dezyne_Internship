@@ -5,9 +5,9 @@ interface IRGBLed {
 	in void setGreen();
 	in void setBlue();
 	
-	in void setSpecificRed(Integer i);
-	in void setSpecificGreen(Integer i);
-	in void setSpecificBlue(Integer i);
+	in void setSpecificRed(Integer newValue);
+	in void setSpecificGreen(Integer newValue);
+	in void setSpecificBlue(Integer newValue);
 	
 	behaviour {
 		on setRed: {}

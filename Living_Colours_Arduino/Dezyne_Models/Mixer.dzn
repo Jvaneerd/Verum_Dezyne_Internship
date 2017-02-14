@@ -23,12 +23,17 @@ interface IMixer {
 } 
 
 interface IHWMixer {
+	in void start();
+	in void stop();
 	in void mixRed();
 	in void mixGreen();
 	in void mixBlue();
 	
-	out void colorChanged(Integer newValue);
+	out void valueChanged(Integer newValue);
 	behaviour {
+		on start: {}
+		on stop: {}
+		
 		on mixRed: {}
 		on mixGreen: {}
 		on mixBlue: {}
@@ -47,6 +52,7 @@ component Mixer {
 		
 		on iMixer.start(): {
 			[!isRunning] { 
+				iHWMixer.start();
 				isRunning = true;
 			}
 		} 
@@ -54,29 +60,33 @@ component Mixer {
 		[isRunning] {
 			on iMixer.toggle(): {
 				[state == State.MixingRed] {
+					iHWMixer.mixGreen();
 					state = State.MixingGreen;
 				}
 				[state == State.MixingGreen] {
+					iHWMixer.mixBlue();
 					state = State.MixingBlue;
 				}
 				[state == State.MixingBlue] {
+					iHWMixer.mixRed();
 					state = State.MixingRed;
 				}
 			} 
 			
-			on iHWMixer.colorChanged(newValue): {
+			on iHWMixer.valueChanged(newValue): {
 				[state == State.MixingRed] {
-					iRGBLed.setSpecificRed($newValue$);
+					iRGBLed.setSpecificRed(newValue);
 				} 
 				[state == State.MixingGreen] {
-					iRGBLed.setSpecificGreen($newValue$);
+					iRGBLed.setSpecificGreen(newValue);
 				} 
 				[state == State.MixingBlue] {
-					iRGBLed.setSpecificBlue($newValue$);
+					iRGBLed.setSpecificBlue(newValue);
 				}
 			} 
 			
 			on iMixer.stop(): {
+				iHWMixer.stop();
 				isRunning = false;
 			}
 		}

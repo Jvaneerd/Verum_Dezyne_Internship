@@ -55,10 +55,12 @@ component Controller {
 				}
 				[state == State.Demo] {
 					iDemoMode.stop();
+					iMixer.start();
 					state = State.Mixing;
 				} 
 				[state == State.Presets] {
 					iPresetter.stop();
+					iMixer.start();
 					state = State.Mixing;
 				}
 			} 
@@ -74,6 +76,7 @@ component Controller {
 				} 
 				[state == State.Mixing] {
 					iPresetter.start();
+					iMixer.stop();
 					state = State.Presets;
 				}
 			}
