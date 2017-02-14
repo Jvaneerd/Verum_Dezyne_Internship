@@ -1,6 +1,6 @@
 extern Preset $uint8_t$;
 
-interface IPresetter {
+interface IPresetMode {
 	in void start();
 	in void stop();
 	in void toggle();
@@ -32,8 +32,8 @@ interface IPresetSelector {
 	}
 }
 
-component Presetter {
-	provides IPresetter iPresetter;
+component PresetMode {
+	provides IPresetMode iPresetMode;
 	requires IPresetSelector iPresetSelector;
 	
 	behaviour {
@@ -41,7 +41,7 @@ component Presetter {
 		Presets preset = Presets.Yellow;
 		bool isRunning = false;
 		
-		on iPresetter.start(): {
+		on iPresetMode.start(): {
 			[!isRunning] {
 				isRunning = true;
 				preset = Presets.Yellow;
@@ -49,14 +49,14 @@ component Presetter {
 			}
 		}
 		
-		on iPresetter.stop(): {
+		on iPresetMode.stop(): {
 			[isRunning] {
 				isRunning = false;
 				iPresetSelector.stop();
 			} 
 		}
 			
-		on iPresetter.toggle(): {
+		on iPresetMode.toggle(): {
 			[isRunning] {
 				[preset == Presets.Yellow] {
 					preset = Presets.Cyan;

@@ -28,6 +28,7 @@ void clearTimer(ITimer* self) {
   cli();
   TIMSK1 &= ~_BV(OCIE1A);
   sei();
+  timeout = false;
 }
 
 ISR(TIMER1_COMPA_vect){

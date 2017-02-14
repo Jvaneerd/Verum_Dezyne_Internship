@@ -1,6 +1,6 @@
 import RGBLed.dzn;
 
-interface IMixer {
+interface IMixMode {
 	in void start();
 	in void stop();
 	in void toggle();
@@ -40,8 +40,8 @@ interface IHWMixer {
 	}
 }
 
-component Mixer {
-	provides IMixer iMixer;
+component MixMode {
+	provides IMixMode iMixMode;
 	requires IHWMixer iHWMixer;
 	requires IRGBLed iRGBLed;
 
@@ -50,7 +50,7 @@ component Mixer {
 		bool isRunning = false;
 		State state = State.MixingRed;
 		
-		on iMixer.start(): {
+		on iMixMode.start(): {
 			[!isRunning] { 
 				iHWMixer.start();
 				isRunning = true;
@@ -58,7 +58,7 @@ component Mixer {
 		} 
 		
 		[isRunning] {
-			on iMixer.toggle(): {
+			on iMixMode.toggle(): {
 				[state == State.MixingRed] {
 					iHWMixer.mixGreen();
 					state = State.MixingGreen;
@@ -85,7 +85,7 @@ component Mixer {
 				}
 			} 
 			
-			on iMixer.stop(): {
+			on iMixMode.stop(): {
 				iHWMixer.stop();
 				isRunning = false;
 			}

@@ -70,17 +70,3 @@ component DemoMode {
 		}
 	}
 }
-
-component DemoSystem {
-	provides IDemoMode iDemoMode;
-	requires ITimer iTimer;
-	requires IRGBLed iRGBLed;
-	
-	system {
-		DemoMode demoMode;
-		
-		iDemoMode<=>demoMode.iDemoMode;
-		demoMode.iRGBLed<=>iRGBLed;
-		demoMode.iTimer<=>iTimer;
-	}
-}

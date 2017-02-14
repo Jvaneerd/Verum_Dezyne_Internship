@@ -1,7 +1,7 @@
 import RGBLed.dzn;
 import DemoMode.dzn;
-import Mixer.dzn;
-import Presetter.dzn;
+import MixMode.dzn;
+import PresetMode.dzn;
 
 interface IController {
 	in void begin();
@@ -31,8 +31,8 @@ interface IController {
 component Controller {
 	provides IController iController;
 	requires IDemoMode iDemoMode;
-	requires IMixer iMixer;
-	requires IPresetter iPresetter;
+	requires IMixMode iMixMode;
+	requires IPresetMode iPresetMode;
 	
 	behaviour {
 		enum State { Demo, Mixing, Presets };
@@ -51,32 +51,32 @@ component Controller {
 		[initialized] {
 			on iController.mixButtonPressed(): {
 				[state == State.Mixing] {
-					iMixer.toggle();
+					iMixMode.toggle();
 				}
 				[state == State.Demo] {
 					iDemoMode.stop();
-					iMixer.start();
+					iMixMode.start();
 					state = State.Mixing;
 				} 
 				[state == State.Presets] {
-					iPresetter.stop();
-					iMixer.start();
+					iPresetMode.stop();
+					iMixMode.start();
 					state = State.Mixing;
 				}
 			} 
 		
 			on iController.presetButtonPressed(): {
 				[state == State.Presets] {
-					iPresetter.toggle();
+					iPresetMode.toggle();
 				}
 				[state == State.Demo] {
 					iDemoMode.stop();
-					iPresetter.start();
+					iPresetMode.start();
 					state = State.Presets;
 				} 
 				[state == State.Mixing] {
-					iPresetter.start();
-					iMixer.stop();
+					iMixMode.stop();
+					iPresetMode.start();
 					state = State.Presets;
 				}
 			}
@@ -95,18 +95,18 @@ component LivingColours {
 	
 	system {
 		Controller controller;
-		DemoSystem demoSystem;
-		Mixer mixer;
-		Presetter presetter;
+		DemoMode demoMode;
+		MixMode mixMode;
+		PresetMode presetMode;
 		
 		iController<=>controller.iController;
-		controller.iDemoMode<=>demoSystem.iDemoMode;
-		controller.iMixer<=>mixer.iMixer;
-		controller.iPresetter<=>presetter.iPresetter;
-		demoSystem.iRGBLed<=>iDemoRGBLed;
-		demoSystem.iTimer<=>iTimer;
-		presetter.iPresetSelector<=>iPresetSelector;
-		mixer.iHWMixer<=>iHWMixer;
-		mixer.iRGBLed<=>iMixerRGBLed;
+		controller.iDemoMode<=>demoMode.iDemoMode;
+		controller.iMixMode<=>mixMode.iMixMode;
+		controller.iPresetMode<=>presetMode.iPresetMode;
+		demoMode.iRGBLed<=>iDemoRGBLed;
+		demoMode.iTimer<=>iTimer;
+		presetMode.iPresetSelector<=>iPresetSelector;
+		mixMode.iHWMixer<=>iHWMixer;
+		mixMode.iRGBLed<=>iMixerRGBLed;
 	}
 }
