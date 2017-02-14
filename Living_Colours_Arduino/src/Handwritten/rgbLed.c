@@ -18,6 +18,10 @@ void rgb_setBlue(IRGBLed* self) {
   setColor(0, 0, 255);
 }
 
+void rgb_dim(IRGBLed* self) {
+  setColor(0, 0, 0);
+}
+
 void rgb_setSpecificRed(IRGBLed* self, int value) {
   analogWrite(PIN_RED, value);
 }

@@ -5,6 +5,8 @@ interface IRGBLed {
 	in void setGreen();
 	in void setBlue();
 	
+	in void dim();
+	
 	in void setSpecificRed(Integer newValue);
 	in void setSpecificGreen(Integer newValue);
 	in void setSpecificBlue(Integer newValue);
@@ -13,6 +15,8 @@ interface IRGBLed {
 		on setRed: {}
 		on setGreen: {}
 		on setBlue: {}
+		
+		on dim: {}
 		
 		on setSpecificRed: {}
 		on setSpecificGreen: {}

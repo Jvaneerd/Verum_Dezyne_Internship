@@ -43,6 +43,7 @@ component DemoMode {
 			[isRunning] {
 				isRunning = false;
 				iTimer.cancel();
+				iRGBLed.dim();
 			}
 		}
 		

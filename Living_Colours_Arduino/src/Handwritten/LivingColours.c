@@ -43,6 +43,8 @@ int main() {
   lc.iDemoRGBLed->in.setGreen = rgb_setGreen;
   lc.iDemoRGBLed->in.setBlue = rgb_setBlue;
 
+  lc.iDemoRGBLed->in.dim = rgb_dim;
+
   lc.iMixerRGBLed->in.setSpecificRed = rgb_setSpecificRed;
   lc.iMixerRGBLed->in.setSpecificGreen = rgb_setSpecificGreen;
   lc.iMixerRGBLed->in.setSpecificBlue = rgb_setSpecificBlue;

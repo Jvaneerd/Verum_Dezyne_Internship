@@ -3,7 +3,7 @@
 
 #define MIX_POT_PIN A0
 
-typedef enum { Red, Green, Blue } Colours;
+typedef enum { Red, Green, Blue, NR_OF_COLOURS } Colours;
 int colours[3] = { 0, 0, 0 };
 uint8_t currentColour = Red;
 bool hwMixer_Started = false;
