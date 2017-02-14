@@ -85,8 +85,10 @@ component Controller {
 component LivingColours {
 	provides IController iController;
 	requires ITimer iTimer;
-	requires IRGBLed iRGBLed;
+	requires IRGBLed iDemoRGBLed;
+	requires IRGBLed iMixerRGBLed;
 	requires IPresetSelector iPresetSelector;
+	requires IHWMixer iHWMixer;
 	
 	system {
 		Controller controller;
@@ -98,8 +100,10 @@ component LivingColours {
 		controller.iDemoMode<=>demoSystem.iDemoMode;
 		controller.iMixer<=>mixer.iMixer;
 		controller.iPresetter<=>presetter.iPresetter;
-		demoSystem.iRGBLed<=>iRGBLed;
+		demoSystem.iRGBLed<=>iDemoRGBLed;
 		demoSystem.iTimer<=>iTimer;
 		presetter.iPresetSelector<=>iPresetSelector;
+		mixer.iHWMixer<=>iHWMixer;
+		mixer.iRGBLed<=>iMixerRGBLed;
 	}
 }

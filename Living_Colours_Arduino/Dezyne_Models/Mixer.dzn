@@ -1,28 +1,83 @@
+import RGBLed.dzn;
+
 interface IMixer {
+	in void start();
+	in void stop();
 	in void toggle();
 	
 	behaviour {
-		on toggle: {}
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
+		on toggle: {
+			[!isRunning] illegal;
+			[isRunning] {}
+		}
+	}
+} 
+
+interface IHWMixer {
+	in void mixRed();
+	in void mixGreen();
+	in void mixBlue();
+	
+	out void colorChanged(Integer newValue);
+	behaviour {
+		on mixRed: {}
+		on mixGreen: {}
+		on mixBlue: {}
 	}
 }
 
 component Mixer {
 	provides IMixer iMixer;
+	requires IHWMixer iHWMixer;
+	requires IRGBLed iRGBLed;
 
 	behaviour {
 		enum State { MixingRed, MixingGreen, MixingBlue };
-
+		bool isRunning = false;
 		State state = State.MixingRed;
-
-		on iMixer.toggle(): {
-			[state == State.MixingRed] {
-				state = State.MixingGreen;
+		
+		on iMixer.start(): {
+			[!isRunning] { 
+				isRunning = true;
 			}
-			[state == State.MixingGreen] {
-				state = State.MixingBlue;
-			}
-			[state == State.MixingBlue] {
-				state = State.MixingRed;
+		} 
+		
+		[isRunning] {
+			on iMixer.toggle(): {
+				[state == State.MixingRed] {
+					state = State.MixingGreen;
+				}
+				[state == State.MixingGreen] {
+					state = State.MixingBlue;
+				}
+				[state == State.MixingBlue] {
+					state = State.MixingRed;
+				}
+			} 
+			
+			on iHWMixer.colorChanged(newValue): {
+				[state == State.MixingRed] {
+					iRGBLed.setSpecificRed($newValue$);
+				} 
+				[state == State.MixingGreen] {
+					iRGBLed.setSpecificGreen($newValue$);
+				} 
+				[state == State.MixingBlue] {
+					iRGBLed.setSpecificBlue($newValue$);
+				}
+			} 
+			
+			on iMixer.stop(): {
+				isRunning = false;
 			}
 		}
 	}

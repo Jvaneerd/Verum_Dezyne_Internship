@@ -1,11 +1,21 @@
+extern Integer $int$;
+
 interface IRGBLed {
 	in void setRed();
 	in void setGreen();
 	in void setBlue();
 	
+	in void setSpecificRed(Integer i);
+	in void setSpecificGreen(Integer i);
+	in void setSpecificBlue(Integer i);
+	
 	behaviour {
 		on setRed: {}
 		on setGreen: {}
 		on setBlue: {}
+		
+		on setSpecificRed: {}
+		on setSpecificGreen: {}
+		on setSpecificBlue: {}
 	}
 }
