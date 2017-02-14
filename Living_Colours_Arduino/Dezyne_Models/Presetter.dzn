@@ -1,4 +1,4 @@
-enum Presets { One, Two, Three };
+extern Preset $uint8_t$;
 
 interface IPresetter {
 	in void start();
@@ -23,7 +23,7 @@ interface IPresetter {
 }
 
 interface IPresetSelector {
-	in void selectPreset();
+	in void selectPreset(Preset p);
 	in void stop();
 	
 	behaviour {
@@ -37,14 +37,15 @@ component Presetter {
 	requires IPresetSelector iPresetSelector;
 	
 	behaviour {
-		Presets preset = Presets.One;
+		enum Presets { Yellow, Cyan, Magenta };
+		Presets preset = Presets.Yellow;
 		bool isRunning = false;
 		
 		on iPresetter.start(): {
 			[!isRunning] {
 				isRunning = true;
-				preset = Presets.One;
-				iPresetSelector.selectPreset();
+				preset = Presets.Yellow;
+				iPresetSelector.selectPreset($self->preset$);
 			}
 		}
 		
@@ -57,17 +58,17 @@ component Presetter {
 			
 		on iPresetter.toggle(): {
 			[isRunning] {
-				[preset == Presets.One] {
-					preset = Presets.Two;
-					iPresetSelector.selectPreset();
+				[preset == Presets.Yellow] {
+					preset = Presets.Cyan;
+					iPresetSelector.selectPreset($self->preset$);
 				}
-				[preset == Presets.Two] {
-					preset = Presets.Three;
-					iPresetSelector.selectPreset();
+				[preset == Presets.Cyan] {
+					preset = Presets.Magenta;
+					iPresetSelector.selectPreset($self->preset$);
 				}
-				[preset == Presets.Three] {
-					preset = Presets.One;
-					iPresetSelector.selectPreset();
+				[preset == Presets.Magenta] {
+					preset = Presets.Yellow;
+					iPresetSelector.selectPreset($self->preset$);
 				}
 			} 
 		}
