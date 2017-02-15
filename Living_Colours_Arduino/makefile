@@ -2,6 +2,8 @@
 ### This is the path to where you have created/cloned your project
 PROJECT_DIR       = /Users/Johri/Documents/Afstudeerstage/Git/Verum_Dezyne_Internship/Living_Colours_Arduino
 
+SHELL = bash
+
 ### ARDMK_DIR
 ### Path to the Arduino-Makefile directory.
 ARDMK_DIR         = /usr/local/bin/Arduino-Makefile
@@ -40,7 +42,7 @@ CXXFLAGS_STD      = -std=gnu++11
 
 ### CFLAGS
 ### Flags you might want to set for debugging purpose. Comment to stop.
-CFLAGS         	 += -Ilib -DDZN_TINY
+CFLAGS         	 += -Ilib -DDZN_TINY -include $(PROJECT_DIR)/src/Handwritten/external_types.h
 
 ### CXXFLAGS
 ### Flags you might want to set for debugging purpose. Comment to stop.
@@ -58,12 +60,30 @@ CURRENT_DIR       = $(shell basename $(CURDIR))
 ### This is where you put the binaries you just compile using 'make'
 OBJDIR            = $(PROJECT_DIR)/bin/$(BOARD_TAG)/$(CURRENT_DIR)
 
+### MDLDIR
+### This is where you put your Dezyne model files (*.dzn)
+MDLDIR						= $(PROJECT_DIR)/Dezyne_Models
+
 ### SRCDIR
 ### This is where the source code for the project may be found
-LOCAL_C_SRCS			= $(wildcard src/Generated/*.c)
-LOCAL_C_SRCS		 += $(wildcard src/Handwritten/*.c)
+LOCAL_C_SRCS		  = $(wildcard src/Handwritten/*.c)
+LOCAL_C_SRCS		 += $(wildcard src/Generated/*.c)
 LOCAL_C_SRCS     += $(wildcard $(USER_LIB_PATH)/*.c)
 LOCAL_CPP_SRCS    = $(wildcard src/Handwritten/*.cpp)
+
+DZN_FILES				 := $(wildcard $(MDLDIR)/*.dzn)
+
+default: all
+
+generate:
+	for var in $(DZN_FILES) ; do \
+	dzn code --language=c -I Dezyne_Models $$var --output=src/Generated --version=development ; \
+	done
+
+cleanall: clean
+	rm -rf src/Generated
+
+.PHONY: default generate cleanall
 
 
 ### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
