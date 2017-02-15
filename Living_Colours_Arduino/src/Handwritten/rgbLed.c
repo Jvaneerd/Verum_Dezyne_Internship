@@ -1,35 +1,39 @@
 #include "rgbLed.h"
 
-void setColor(int red, int green, int blue) {
-  analogWrite(PIN_RED, red);
-  analogWrite(PIN_GREEN, green);
-  analogWrite(PIN_BLUE, blue);
+void rgb_SetRed(IRGBLed* self) {
+  Colour Red = { .red = 255, .green = 0, .blue = 0 };
+  rgb_SetColour(self, Red);
 }
 
-void rgb_setRed(IRGBLed* self) {
-  setColor(255, 0, 0);
+void rgb_SetGreen(IRGBLed* self) {
+  Colour Green = { .red = 0, .green = 255, .blue = 0 };
+  rgb_SetColour(self, Green);
 }
 
-void rgb_setGreen(IRGBLed* self) {
-  setColor(0, 255, 0);
+void rgb_SetBlue(IRGBLed* self) {
+  Colour Blue = { .red = 0, .green = 0, .blue = 255 };
+  rgb_SetColour(self, Blue);
 }
 
-void rgb_setBlue(IRGBLed* self) {
-  setColor(0, 0, 255);
+void rgb_Dim(IRGBLed* self) {
+  Colour dim = { .red = 0, .green = 0, .blue = 0 };
+  rgb_SetColour(self, dim);
 }
 
-void rgb_dim(IRGBLed* self) {
-  setColor(0, 0, 0);
-}
-
-void rgb_setSpecificRed(IRGBLed* self, int value) {
+void rgb_SetSpecificRed(IRGBLed* self, int value) {
   analogWrite(PIN_RED, value);
 }
 
-void rgb_setSpecificGreen(IRGBLed* self, int value) {
+void rgb_SetSpecificGreen(IRGBLed* self, int value) {
   analogWrite(PIN_GREEN, value);
 }
 
-void rgb_setSpecificBlue(IRGBLed* self, int value) {
+void rgb_SetSpecificBlue(IRGBLed* self, int value) {
   analogWrite(PIN_BLUE, value);
+}
+
+void rgb_SetColour(IRGBLed* self, Colour colour) {
+  analogWrite(PIN_RED, colour.red);
+  analogWrite(PIN_GREEN, colour.green);
+  analogWrite(PIN_BLUE, colour.blue);
 }

@@ -88,25 +88,27 @@ component Controller {
 component LivingColours {
 	provides IController iController;
 	requires ITimer iTimer;
-	requires IRGBLed iDemoRGBLed;
-	requires IRGBLed iMixerRGBLed;
+	requires IRGBLed iRGBLed;
 	requires IPresetSelector iPresetSelector;
-	requires IHWMixer iHWMixer;
+	requires IPotMeter iPotMeter;
 	
 	system {
 		Controller controller;
 		DemoMode demoMode;
 		MixMode mixMode;
 		PresetMode presetMode;
+		RGBLedMux rgbLedMux;
 		
 		iController<=>controller.iController;
+		iRGBLed<=>rgbLedMux.iPhysicalLed;
 		controller.iDemoMode<=>demoMode.iDemoMode;
 		controller.iMixMode<=>mixMode.iMixMode;
 		controller.iPresetMode<=>presetMode.iPresetMode;
-		demoMode.iRGBLed<=>iDemoRGBLed;
 		demoMode.iTimer<=>iTimer;
+		demoMode.iRGBLed<=>rgbLedMux.iDemoLed;
 		presetMode.iPresetSelector<=>iPresetSelector;
-		mixMode.iHWMixer<=>iHWMixer;
-		mixMode.iRGBLed<=>iMixerRGBLed;
+		presetMode.iRGBLed<=>rgbLedMux.iPresetLed;
+		mixMode.iPotMeter<=>iPotMeter;
+		mixMode.iRGBLed<=>rgbLedMux.iMixLed;
 	}
 }

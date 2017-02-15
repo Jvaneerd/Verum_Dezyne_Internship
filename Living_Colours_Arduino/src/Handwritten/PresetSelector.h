@@ -3,7 +3,7 @@
 
 #include "../Generated/IPresetSelector.h"
 
-void selectPreset(IPresetSelector* self, uint8_t p);
-void stopPreset(IPresetSelector* self);
+void ps_Toggle(IPresetSelector* self);
+void ps_GetPreset(IPresetSelector* self, Colour* colour);
 
 #endif //PRESETSELECTOR_H

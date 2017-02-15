@@ -1,4 +1,4 @@
-extern Preset $uint8_t$;
+import RGBLed.dzn;
 
 interface IPresetMode {
 	in void start();
@@ -23,53 +23,45 @@ interface IPresetMode {
 }
 
 interface IPresetSelector {
-	in void selectPreset(Preset p);
-	in void stop();
+	in void toggle();
+	in void getPreset(out Colour colour);
 	
 	behaviour {
-		on selectPreset: {}
-		on stop: {}
+		on toggle: {}
+		on getPreset: {}
 	}
 }
 
 component PresetMode {
 	provides IPresetMode iPresetMode;
 	requires IPresetSelector iPresetSelector;
+	requires IRGBLed iRGBLed;
 	
 	behaviour {
-		enum Presets { Yellow, Cyan, Magenta };
-		Presets preset = Presets.Yellow;
 		bool isRunning = false;
 		
 		on iPresetMode.start(): {
 			[!isRunning] {
 				isRunning = true;
-				preset = Presets.Yellow;
-				iPresetSelector.selectPreset($self->preset$);
+				Colour colour;
+				iPresetSelector.getPreset(colour);
+				iRGBLed.setColour(colour);
 			}
 		}
 		
 		on iPresetMode.stop(): {
 			[isRunning] {
 				isRunning = false;
-				iPresetSelector.stop();
+				iRGBLed.dim();
 			} 
 		}
 			
 		on iPresetMode.toggle(): {
 			[isRunning] {
-				[preset == Presets.Yellow] {
-					preset = Presets.Cyan;
-					iPresetSelector.selectPreset($self->preset$);
-				}
-				[preset == Presets.Cyan] {
-					preset = Presets.Magenta;
-					iPresetSelector.selectPreset($self->preset$);
-				}
-				[preset == Presets.Magenta] {
-					preset = Presets.Yellow;
-					iPresetSelector.selectPreset($self->preset$);
-				}
+				iPresetSelector.toggle();
+				Colour colour;
+				iPresetSelector.getPreset(colour);
+				iRGBLed.setColour(colour);
 			} 
 		}
 	}

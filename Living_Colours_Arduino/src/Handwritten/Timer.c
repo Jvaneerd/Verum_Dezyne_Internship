@@ -9,7 +9,7 @@ unsigned long determine_timer_compare_value(long period_in_ms) {
   return clock_speed / (prescaler * (1000/period_in_ms));
 }
 
-void startTimer(ITimer* self, long ms) {
+void tm_StartTimer(ITimer* self, long ms) {
   cli(); // stop interrupts
 
   TCCR1A = 0;
@@ -24,7 +24,7 @@ void startTimer(ITimer* self, long ms) {
   sei();
 }
 
-void clearTimer(ITimer* self) {
+void tm_ClearTimer(ITimer* self) {
   cli();
   TIMSK1 &= ~_BV(OCIE1A);
   sei();

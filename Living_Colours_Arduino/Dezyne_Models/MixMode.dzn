@@ -22,27 +22,33 @@ interface IMixMode {
 	}
 } 
 
-interface IHWMixer {
+interface IPotMeter {
 	in void start();
 	in void stop();
-	in void mixRed();
-	in void mixGreen();
-	in void mixBlue();
 	
 	out void valueChanged(Integer newValue);
 	behaviour {
-		on start: {}
-		on stop: {}
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
 		
-		on mixRed: {}
-		on mixGreen: {}
-		on mixBlue: {}
+		[isRunning] {
+			on optional: {
+				valueChanged;
+			}
+		}
 	}
 }
 
 component MixMode {
 	provides IMixMode iMixMode;
-	requires IHWMixer iHWMixer;
+	requires IPotMeter iPotMeter;
 	requires IRGBLed iRGBLed;
 
 	behaviour {
@@ -52,7 +58,7 @@ component MixMode {
 		
 		on iMixMode.start(): {
 			[!isRunning] { 
-				iHWMixer.start();
+				iPotMeter.start();
 				isRunning = true;
 			}
 		} 
@@ -60,20 +66,17 @@ component MixMode {
 		[isRunning] {
 			on iMixMode.toggle(): {
 				[state == State.MixingRed] {
-					iHWMixer.mixGreen();
 					state = State.MixingGreen;
 				}
 				[state == State.MixingGreen] {
-					iHWMixer.mixBlue();
 					state = State.MixingBlue;
 				}
 				[state == State.MixingBlue] {
-					iHWMixer.mixRed();
 					state = State.MixingRed;
 				}
 			} 
 			
-			on iHWMixer.valueChanged(newValue): {
+			on iPotMeter.valueChanged(newValue): {
 				[state == State.MixingRed] {
 					iRGBLed.setSpecificRed(newValue);
 				} 
@@ -86,7 +89,7 @@ component MixMode {
 			} 
 			
 			on iMixMode.stop(): {
-				iHWMixer.stop();
+				iPotMeter.stop();
 				isRunning = false;
 			}
 		}

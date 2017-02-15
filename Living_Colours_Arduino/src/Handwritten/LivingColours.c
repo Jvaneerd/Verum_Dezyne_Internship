@@ -3,11 +3,11 @@
 #include <dzn/runtime.h>
 #include <dzn/locator.h>
 
-#include "../Generated/LivingColours.h"
 #include "rgbLed.h"
+#include "../Generated/LivingColours.h"
 #include "Timer.h"
 #include "PresetSelector.h"
-#include "HWMixer.h"
+#include "PotMeter.h"
 
 #define PRESETBTN_PIN 12
 #define MIXBTN_PIN    13
@@ -39,27 +39,23 @@ int main() {
   LivingColours lc;
   LivingColours_init(&lc, 0);
 
-  lc.iDemoRGBLed->in.setRed = rgb_setRed;
-  lc.iDemoRGBLed->in.setGreen = rgb_setGreen;
-  lc.iDemoRGBLed->in.setBlue = rgb_setBlue;
+  lc.iRGBLed->in.setRed = rgb_SetRed;
+  lc.iRGBLed->in.setGreen = rgb_SetGreen;
+  lc.iRGBLed->in.setBlue = rgb_SetBlue;
+  lc.iRGBLed->in.dim = rgb_Dim;
+  lc.iRGBLed->in.setSpecificRed = rgb_SetSpecificRed;
+  lc.iRGBLed->in.setSpecificGreen = rgb_SetSpecificGreen;
+  lc.iRGBLed->in.setSpecificBlue = rgb_SetSpecificBlue;
+  lc.iRGBLed->in.setColour = rgb_SetColour;
 
-  lc.iDemoRGBLed->in.dim = rgb_dim;
+  lc.iTimer->in.start = tm_StartTimer;
+  lc.iTimer->in.cancel = tm_ClearTimer;
 
-  lc.iMixerRGBLed->in.setSpecificRed = rgb_setSpecificRed;
-  lc.iMixerRGBLed->in.setSpecificGreen = rgb_setSpecificGreen;
-  lc.iMixerRGBLed->in.setSpecificBlue = rgb_setSpecificBlue;
+  lc.iPresetSelector->in.toggle = ps_Toggle;
+  lc.iPresetSelector->in.getPreset = ps_GetPreset;
 
-  lc.iTimer->in.start = startTimer;
-  lc.iTimer->in.cancel = clearTimer;
-
-  lc.iPresetSelector->in.selectPreset = selectPreset;
-  lc.iPresetSelector->in.stop = stopPreset;
-
-  lc.iHWMixer->in.start = hwMixer_Start;
-  lc.iHWMixer->in.stop = hwMixer_Stop;
-  lc.iHWMixer->in.mixRed = hwMixer_mixRed;
-  lc.iHWMixer->in.mixGreen = hwMixer_mixGreen;
-  lc.iHWMixer->in.mixBlue = hwMixer_mixBlue;
+  lc.iPotMeter->in.start = pm_Start;
+  lc.iPotMeter->in.stop = pm_Stop;
 
   init();
   arduinoSetup();
@@ -101,9 +97,9 @@ int main() {
         }
       }
     }
-    if(hwMixer_Started) {
-      if(hwMixer_checkChanges()) {
-        lc.iHWMixer->out.valueChanged(lc.iHWMixer, colours[currentColour]);
+    if(pm_Started) {
+      if(pm_CheckChanges()) {
+        lc.iPotMeter->out.valueChanged(lc.iPotMeter, currentValue);
       }
     }
 

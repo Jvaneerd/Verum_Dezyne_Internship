@@ -1,4 +1,5 @@
 extern Integer $int$;
+extern Colour $Colour$;
 
 interface IRGBLed {
 	in void setRed();
@@ -11,6 +12,8 @@ interface IRGBLed {
 	in void setSpecificGreen(Integer newValue);
 	in void setSpecificBlue(Integer newValue);
 	
+	in void setColour(Colour colour);
+	
 	behaviour {
 		on setRed: {}
 		on setGreen: {}
@@ -21,5 +24,26 @@ interface IRGBLed {
 		on setSpecificRed: {}
 		on setSpecificGreen: {}
 		on setSpecificBlue: {}
+		
+		on setColour: {}
+	}
+}
+
+component RGBLedMux {
+	provides IRGBLed iPresetLed;
+	provides IRGBLed iMixLed;
+	provides IRGBLed iDemoLed;
+	
+	requires IRGBLed iPhysicalLed;
+	
+	behaviour {
+		on iPresetLed.setRed(), iMixLed.setRed(), iDemoLed.setRed(): iPhysicalLed.setRed();
+		on iPresetLed.setGreen(), iMixLed.setGreen(), iDemoLed.setGreen(): iPhysicalLed.setGreen();
+		on iPresetLed.setBlue(), iMixLed.setBlue(), iDemoLed.setBlue(): iPhysicalLed.setBlue();
+		on iPresetLed.dim(), iMixLed.dim(), iDemoLed.dim(): iPhysicalLed.dim();
+		on iPresetLed.setSpecificRed(newValue), iMixLed.setSpecificRed(newValue), iDemoLed.setSpecificRed(newValue): iPhysicalLed.setSpecificRed(newValue);
+		on iPresetLed.setSpecificGreen(newValue), iMixLed.setSpecificGreen(newValue), iDemoLed.setSpecificGreen(newValue): iPhysicalLed.setSpecificGreen(newValue);
+		on iPresetLed.setSpecificBlue(newValue), iMixLed.setSpecificBlue(newValue), iDemoLed.setSpecificBlue(newValue): iPhysicalLed.setSpecificBlue(newValue);
+		on iPresetLed.setColour(colour), iMixLed.setColour(colour), iDemoLed.setColour(colour): iPhysicalLed.setColour(colour);
 	}
 }

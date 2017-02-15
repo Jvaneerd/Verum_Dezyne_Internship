@@ -8,16 +8,16 @@
 #define PIN_GREEN 6
 #define PIN_BLUE 5
 
-void setColor(int red, int green, int blue);
+void rgb_SetRed(IRGBLed* self);
+void rgb_SetGreen(IRGBLed* self);
+void rgb_SetBlue(IRGBLed* self);
 
-void rgb_setRed(IRGBLed* self);
-void rgb_setGreen(IRGBLed* self);
-void rgb_setBlue(IRGBLed* self);
+void rgb_Dim(IRGBLed* self);
 
-void rgb_dim(IRGBLed* self);
+void rgb_SetSpecificRed(IRGBLed* self, int value);
+void rgb_SetSpecificGreen(IRGBLed* self, int value);
+void rgb_SetSpecificBlue(IRGBLed* self, int value);
 
-void rgb_setSpecificRed(IRGBLed* self, int value);
-void rgb_setSpecificGreen(IRGBLed* self, int value);
-void rgb_setSpecificBlue(IRGBLed* self, int value);
+void rgb_SetColour(IRGBLed* self, Colour colour);
 
 #endif //RGBLED_H
