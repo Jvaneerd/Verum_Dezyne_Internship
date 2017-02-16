@@ -7,6 +7,7 @@ To compile and upload this program, there are a few requirements:
    - Follow the instructions on https://github.com/sudar/Arduino-Makefile to install the Arduino-mk package.
    - On MacOS, install the Arduino IDE from https://www.arduino.cc
    - Configure the following variables in the makefile supplied with this project:
+   
    ⋅⋅- PROJECT_DIR: Set to where your project directory is located
    ⋅⋅- ARDMK_DIR: on Linux: /usr/share/arduino
 
