@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+# Eclipse files
+*.project
+
+# Generated code
+Generated/
