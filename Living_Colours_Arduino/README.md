@@ -16,7 +16,7 @@ To compile and upload this program, there are a few requirements:
    			- on MacOS: /Applications/Arduino.app/Contents/Java
    		- AVR_TOOLS_DIR:
    			- on Linux: /usr
-         	- on MacOS: /usr/local
+        - on MacOS: /usr/local
    		- AVRDUDE:
    			- on Linux: /usr/bin/avrdude
    			- on MacOS: /usr/local/bin/avrdude
