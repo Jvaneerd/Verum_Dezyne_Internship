@@ -24,14 +24,14 @@ To compile and upload this program, there are a few requirements:
    			- on Linux: /dev/ttyACM*
    			- on MacOS: /dev/tty.usbmodem*
 
-   			This makefile assumes that the folder structure remains untouched:
+   		This makefile assumes that the folder structure remains untouched:
    			- .dzn files are in Dezyne_Models
    			- Handwritten files are in src/Handwritten
    			- Dezyne library files are in lib/  
 
-    		If you want to change this structure, look for the MDLDIR, LOCAL_C_SRCS and DZN_FILES variables in the makefile.
+    	If you want to change this structure, look for the MDLDIR, LOCAL_C_SRCS and DZN_FILES variables in the makefile.
 
-    - Before the project can be compiled, code must be generated. This is done with `make generate`.
-    - When code is generated, the generated code will be placed in src/**Generated**. Generating code requires an active internet connection and authentication with Dezyne.
-    - After the code is generated, `make` will compile the Arduino binary.
-    - When the project is compiled, `make upload` will upload the binary to your Arduino. Based on user privileges, sudo may be required.
+  - Before the project can be compiled, code must be generated. This is done with `make generate`.
+  - When code is generated, the generated code will be placed in src/**Generated**. Generating code requires an active internet connection and authentication with Dezyne.
+  - After the code is generated, `make` will compile the Arduino binary.
+  - When the project is compiled, `make upload` will upload the binary to your Arduino. Based on user privileges, sudo may be required.
