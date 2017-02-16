@@ -1,6 +1,6 @@
 ### PROJECT_DIR
 ### This is the path to where you have created/cloned your project
-PROJECT_DIR       = /Users/Johri/Documents/Afstudeerstage/Git/Verum_Dezyne_Internship/Living_Colours_Arduino
+PROJECT_DIR       := ${CURDIR}
 
 SHELL = bash
 
