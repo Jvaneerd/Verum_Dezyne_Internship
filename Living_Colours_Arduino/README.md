@@ -5,18 +5,18 @@ To compile and upload this program, there are a few requirements:
    - Install Dezyne from http://dezyne.verum.com and run it to install the dzn command line client.
      Add the .npm directories that are mentioned to your PATH environment variable
    - Follow the instructions on https://github.com/sudar/Arduino-Makefile to install the Arduino-mk package.
-   - On MacOS, install the
+   - On MacOS, install the Arduino IDE from https://www.arduino.cc
    - Configure the following variables in the makefile supplied with this project:
       - PROJECT_DIR: Set to where your project directory is located
-      - ARDMK_DIR: on Linux: /usr/share/arduino
+      - ARDMK_DIR: on Linux: /usr/share/arduino \n
                    on MacOS: /usr/local/bin/Arduino-Makefile (when installed with homebrew)
-      - ARDUINO_DIR: on Linux: /usr/share/arduino
-                     on MacOS: /Applications/Arduino.app/Contents/Java (MacOS requires the Arduino IDE installed from https://www.arduino.cc)
-      - AVR_TOOLS_DIR: on Linux: /usr
+      - ARDUINO_DIR: on Linux: /usr/share/arduino \n
+                     on MacOS: /Applications/Arduino.app/Contents/Java
+      - AVR_TOOLS_DIR: on Linux: /usr \n
                        on MacOS: /usr/local
-      - AVRDUDE: on Linux: /usr/bin/avrdude
+      - AVRDUDE: on Linux: /usr/bin/avrdude \n
                  on MacOS: /usr/local/bin/avrdude
-      - MONITOR_PORT: on Linux: /dev/ttyACM*
+      - MONITOR_PORT: on Linux: /dev/ttyACM* \n
                       on MacOS: /dev/tty.usbmodem*
 
       This makefile assumes that the folder structure remains untouched:
