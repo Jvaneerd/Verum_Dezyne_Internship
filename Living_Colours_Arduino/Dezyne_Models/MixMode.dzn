@@ -1,0 +1,97 @@
+import RGBLed.dzn;
+
+interface IMixMode {
+	in void start();
+	in void stop();
+	in void toggle();
+	
+	behaviour {
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
+		on toggle: {
+			[!isRunning] illegal;
+			[isRunning] {}
+		}
+	}
+} 
+
+interface IPotMeter {
+	in void start();
+	in void stop();
+	
+	out void valueChanged(Integer newValue);
+	behaviour {
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
+		
+		[isRunning] {
+			on optional: {
+				valueChanged;
+			}
+		}
+	}
+}
+
+component MixMode {
+	provides IMixMode iMixMode;
+	requires IPotMeter iPotMeter;
+	requires IRGBLed iRGBLed;
+
+	behaviour {
+		enum State { MixingRed, MixingGreen, MixingBlue };
+		bool isRunning = false;
+		State state = State.MixingRed;
+		
+		on iMixMode.start(): {
+			[!isRunning] { 
+				iPotMeter.start();
+				isRunning = true;
+			}
+		} 
+		
+		[isRunning] {
+			on iMixMode.toggle(): {
+				[state == State.MixingRed] {
+					state = State.MixingGreen;
+				}
+				[state == State.MixingGreen] {
+					state = State.MixingBlue;
+				}
+				[state == State.MixingBlue] {
+					state = State.MixingRed;
+				}
+			} 
+			
+			on iPotMeter.valueChanged(newValue): {
+				[state == State.MixingRed] {
+					iRGBLed.setSpecificRed(newValue);
+				} 
+				[state == State.MixingGreen] {
+					iRGBLed.setSpecificGreen(newValue);
+				} 
+				[state == State.MixingBlue] {
+					iRGBLed.setSpecificBlue(newValue);
+				}
+			} 
+			
+			on iMixMode.stop(): {
+				iPotMeter.stop();
+				isRunning = false;
+			}
+		}
+	}
+}
