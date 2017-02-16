@@ -69,7 +69,6 @@ MDLDIR						= $(PROJECT_DIR)/Dezyne_Models
 LOCAL_C_SRCS		  = $(wildcard src/Handwritten/*.c)
 LOCAL_C_SRCS		 += $(wildcard src/Generated/*.c)
 LOCAL_C_SRCS     += $(wildcard $(USER_LIB_PATH)/*.c)
-LOCAL_CPP_SRCS    = $(wildcard src/Handwritten/*.cpp)
 
 DZN_FILES				 := $(wildcard $(MDLDIR)/*.dzn)
 
