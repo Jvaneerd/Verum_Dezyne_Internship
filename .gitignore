@@ -33,3 +33,6 @@
 
 # Generated code
 Generated/
+
+# bin folder
+bin/
