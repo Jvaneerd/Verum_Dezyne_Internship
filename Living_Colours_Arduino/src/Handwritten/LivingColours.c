@@ -6,7 +6,7 @@
 #include "rgbLed.h"
 #include "../Generated/LivingColours.h"
 #include "Timer.h"
-#include "PresetSelector.h"
+// #include "PresetSelector.h"
 #include "PotMeter.h"
 
 #define PRESETBTN_PIN 12
@@ -51,8 +51,8 @@ int main() {
   lc.iTimer->in.start = tm_StartTimer;
   lc.iTimer->in.cancel = tm_ClearTimer;
 
-  lc.iPresetSelector->in.toggle = ps_Toggle;
-  lc.iPresetSelector->in.getPreset = ps_GetPreset;
+  // lc.iPresetSelector->in.toggle = ps_Toggle;
+  // lc.iPresetSelector->in.getPreset = ps_GetPreset;
 
   lc.iPotMeter->in.start = pm_Start;
   lc.iPotMeter->in.stop = pm_Stop;

@@ -32,6 +32,10 @@ interface IPresetSelector {
 	}
 }
 
+component PresetList {
+	provides IPresetSelector iPresetSelector;
+}
+
 component PresetMode {
 	provides IPresetMode iPresetMode;
 	requires IPresetSelector iPresetSelector;
