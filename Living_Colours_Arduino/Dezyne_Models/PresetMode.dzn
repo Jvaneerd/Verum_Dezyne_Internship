@@ -4,7 +4,7 @@ interface IPresetMode {
 	in void start();
 	in void stop();
 	in void toggle();
-	
+
 	behaviour {
 		bool isRunning = false;
 		on start: {
@@ -22,10 +22,10 @@ interface IPresetMode {
 	}
 }
 
-interface IPresetSelector {
+interface IPresetList {
 	in void toggle();
 	in void getPreset(out Colour colour);
-	
+
 	behaviour {
 		on toggle: {}
 		on getPreset: {}
@@ -33,40 +33,40 @@ interface IPresetSelector {
 }
 
 component PresetList {
-	provides IPresetSelector iPresetSelector;
+	provides IPresetList iPresetList;
 }
 
 component PresetMode {
 	provides IPresetMode iPresetMode;
-	requires IPresetSelector iPresetSelector;
+	requires IPresetList iPresetList;
 	requires IRGBLed iRGBLed;
-	
+
 	behaviour {
 		bool isRunning = false;
-		
+
 		on iPresetMode.start(): {
 			[!isRunning] {
 				isRunning = true;
 				Colour colour;
-				iPresetSelector.getPreset(colour);
+				iPresetList.getPreset(colour);
 				iRGBLed.setColour(colour);
 			}
 		}
-		
+
 		on iPresetMode.stop(): {
 			[isRunning] {
 				isRunning = false;
 				iRGBLed.dim();
-			} 
+			}
 		}
-			
+
 		on iPresetMode.toggle(): {
 			[isRunning] {
-				iPresetSelector.toggle();
+				iPresetList.toggle();
 				Colour colour;
-				iPresetSelector.getPreset(colour);
+				iPresetList.getPreset(colour);
 				iRGBLed.setColour(colour);
-			} 
+			}
 		}
 	}
 }

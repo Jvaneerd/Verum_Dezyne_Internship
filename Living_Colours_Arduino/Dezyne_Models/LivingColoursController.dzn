@@ -43,8 +43,8 @@ component Controller {
 		on iController.begin(): {
 			[initialized] illegal;
 			[!initialized] {
-				initialized = true;
-				iDemoMode.start();
+				bool demoModeStarted = iDemoMode.start();
+				initialized = demoModeStarted;
 			}
 		}
 		
@@ -89,7 +89,6 @@ component LivingColours {
 	provides IController iController;
 	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
-	//requires IPresetSelector iPresetSelector;
 	requires IPotMeter iPotMeter;
 	
 	system {
@@ -107,7 +106,7 @@ component LivingColours {
 		controller.iPresetMode<=>presetMode.iPresetMode;
 		demoMode.iTimer<=>iTimer;
 		demoMode.iRGBLed<=>rgbLedMux.iDemoLed;
-		presetMode.iPresetSelector<=>presetList.iPresetSelector;
+		presetMode.iPresetList<=>presetList.iPresetList;
 		presetMode.iRGBLed<=>rgbLedMux.iPresetLed;
 		mixMode.iPotMeter<=>iPotMeter;
 		mixMode.iRGBLed<=>rgbLedMux.iMixLed;
