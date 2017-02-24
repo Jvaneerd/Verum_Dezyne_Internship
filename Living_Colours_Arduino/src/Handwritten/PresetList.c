@@ -27,9 +27,9 @@ Colour presets[] = {  { .red = 255, .green = 255, .blue = 0 }, //Yellow
 
 int currentPreset = 0;
 
-static void iPresetSelector_toggle(PresetList* self) {
+static void iPresetList_toggle(PresetList* self) {
 	(void)self;
-	{
+  {
 	  currentPreset++;
 	  if(currentPreset == NR_OF_PRESETS) {
 	    currentPreset = 0;
@@ -37,17 +37,34 @@ static void iPresetSelector_toggle(PresetList* self) {
 	}
 }
 
-static void iPresetSelector_getPreset(PresetList* self,Colour* colour) {
+static void iPresetList_getPreset(PresetList* self,Colour* colour) {
 	(void)self;
 	{
-		*colour = presets[currentPreset];
+    *colour = presets[currentPreset];
 	}
+}
+
+static void call_in_iPresetList_toggle(IPresetList* port) {
+	RUNTIME_TRACE_in(&port->meta, "toggle");
+	PresetList* self_ = port->meta.provides.address;
+	runtime_start(&self_->dzn_info);
+	iPresetList_toggle(self_);
+	runtime_finish(&self_->dzn_info);
+	RUNTIME_TRACE_out(&port->meta, "return");
+}
+static void call_in_iPresetList_getPreset(IPresetList* port,Colour* colour) {
+	RUNTIME_TRACE_in(&port->meta, "getPreset");
+	PresetList* self_ = port->meta.provides.address;
+	runtime_start(&self_->dzn_info);
+	iPresetList_getPreset(self_,colour);
+	runtime_finish(&self_->dzn_info);
+	RUNTIME_TRACE_out(&port->meta, "return");
 }
 
 void PresetList_init (PresetList* self, locator* dezyne_locator) {
 	runtime_info_init(&self->dzn_info, dezyne_locator);
 	self->dzn_info.performs_flush = false;
 
-	self->iPresetSelector->in.toggle = iPresetSelector_toggle;
-	self->iPresetSelector->in.getPreset = iPresetSelector_getPreset;
+	self->iPresetList->in.toggle = iPresetList_toggle;
+	self->iPresetList->in.getPreset = iPresetList_getPreset;
 }
