@@ -24,11 +24,11 @@ void tm_StartTimer(ITimer* self, long ms) {
   sei();
 }
 
-void tm_ClearTimer(ITimer* self) {
+bool tm_ClearTimer(ITimer* self) {
   cli();
   TIMSK1 &= ~_BV(OCIE1A);
   sei();
-  timeout = false;
+  return timeout;
 }
 
 ISR(TIMER1_COMPA_vect){

@@ -7,6 +7,6 @@
 volatile bool timeout;
 
 void tm_StartTimer(ITimer* self, long ms);
-void tm_ClearTimer(ITimer* self);
+bool tm_ClearTimer(ITimer* self);
 
 #endif //TIMER_H
