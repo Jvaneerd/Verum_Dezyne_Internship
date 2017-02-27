@@ -1,0 +1,76 @@
+import RGBLed.dzn;
+
+interface IPresetMode {
+	in void start();
+	in void stop();
+	in void toggle();
+
+	behaviour {
+		bool isRunning = false;
+		on start: {
+			[!isRunning] isRunning = true;
+			[isRunning] illegal;
+		}
+		on stop: {
+			[!isRunning] illegal;
+			[isRunning] isRunning = false;
+		}
+		on toggle: {
+			[!isRunning] illegal;
+			[isRunning] {}
+		}
+	}
+}
+
+interface IPresetList {
+	in void toggle();
+	in void getPreset(out Colour colour);
+
+	behaviour {
+		on toggle: {}
+		on getPreset: {}
+	}
+}
+
+component PresetList {
+	provides IPresetList iPresetList;
+	behaviour {
+		on iPresetList.toggle(): {}
+		on iPresetList.getPreset(colour): {}
+	}
+}
+
+component PresetMode {
+	provides IPresetMode iPresetMode;
+	requires IPresetList iPresetList;
+	requires IRGBLed iRGBLed;
+
+	behaviour {
+		bool isRunning = false;
+
+		on iPresetMode.start(): {
+			[!isRunning] {
+				isRunning = true;
+				Colour colour;
+				iPresetList.getPreset(colour);
+				iRGBLed.setColour(colour);
+			}
+		}
+
+		on iPresetMode.stop(): {
+			[isRunning] {
+				isRunning = false;
+				iRGBLed.dim();
+			}
+		}
+
+		on iPresetMode.toggle(): {
+			[isRunning] {
+				iPresetList.toggle();
+				Colour colour;
+				iPresetList.getPreset(colour);
+				iRGBLed.setColour(colour);
+			}
+		}
+	}
+}

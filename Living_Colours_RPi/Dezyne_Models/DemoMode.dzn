@@ -1,0 +1,72 @@
+import Timer.dzn;
+import RGBLed.dzn;
+
+interface IDemoMode {
+	in void start();
+	in void stop();
+	
+	behaviour {
+		enum DemoState { Started, Stopped };
+		DemoState demoState = DemoState.Stopped;
+		on start: {
+			[demoState == DemoState.Started] illegal;
+			[demoState == DemoState.Stopped] demoState = DemoState.Started;
+		} 
+		
+		on stop: {
+			[demoState == DemoState.Started] demoState = DemoState.Stopped;
+			[demoState == DemoState.Stopped] illegal;
+		}
+	}
+}
+
+component DemoMode {
+	provides IDemoMode iDemoMode;
+	requires ITimer iTimer;
+	requires IRGBLed iRGBLed;
+	
+	behaviour {
+		enum RgbState { Red, Green, Blue };
+		enum DemoState { Started, Stopped };
+		RgbState rgbState = RgbState.Red;
+		DemoState demoState = DemoState.Stopped;
+		
+		on iDemoMode.start(): {
+			[demoState == DemoState.Stopped] {
+				demoState = DemoState.Started;
+				iRGBLed.setRed();
+				iTimer.start($1000$);
+			}
+		} 
+		
+		on iDemoMode.stop(): {
+			[demoState == DemoState.Started] {
+				iRGBLed.dim();
+				iTimer.cancel();
+				demoState = DemoState.Stopped;
+			}
+		}
+		
+		on iTimer.timeout(): {
+			[demoState == DemoState.Started] {
+				[rgbState == RgbState.Red] {
+					rgbState = RgbState.Green;
+					iRGBLed.setGreen();
+					iTimer.start($1000$);
+				} 
+				
+				[rgbState == RgbState.Green] {
+					rgbState = RgbState.Blue;
+					iRGBLed.setBlue();
+					iTimer.start($1000$);
+				}
+				
+				[rgbState == RgbState.Blue] {
+					rgbState = RgbState.Red;
+					iRGBLed.setRed();
+					iTimer.start($1000$);
+				} 
+			}
+		}
+	}
+}
