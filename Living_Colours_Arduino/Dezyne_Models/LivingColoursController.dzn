@@ -43,8 +43,8 @@ component Controller {
 		on iController.begin(): {
 			[initialized] illegal;
 			[!initialized] {
-				bool demoModeStarted = iDemoMode.start();
-				initialized = demoModeStarted;
+				iDemoMode.start();
+				initialized = true;
 			}
 		}
 		
