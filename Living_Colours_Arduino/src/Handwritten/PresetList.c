@@ -65,6 +65,6 @@ void PresetList_init (PresetList* self, locator* dezyne_locator) {
 	runtime_info_init(&self->dzn_info, dezyne_locator);
 	self->dzn_info.performs_flush = false;
 
-	self->iPresetList->in.toggle = iPresetList_toggle;
-	self->iPresetList->in.getPreset = iPresetList_getPreset;
+	self->iPresetList->in.toggle = call_in_iPresetList_toggle;
+	self->iPresetList->in.getPreset = call_in_iPresetList_getPreset;
 }
