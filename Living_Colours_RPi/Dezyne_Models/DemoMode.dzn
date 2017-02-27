@@ -22,15 +22,14 @@ interface IDemoMode {
 
 component DemoMode {
 	provides IDemoMode iDemoMode;
-	requires external ITimer iTimer;
+	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
 	
 	behaviour {
 		enum RgbState { Red, Green, Blue };
-		enum DemoState { Started, Stopping, Stopped };
+		enum DemoState { Started, Stopped };
 		RgbState rgbState = RgbState.Red;
 		DemoState demoState = DemoState.Stopped;
-		bool timeoutPending = false;
 		
 		on iDemoMode.start(): {
 			[demoState == DemoState.Stopped] {
@@ -41,16 +40,10 @@ component DemoMode {
 		} 
 		
 		on iDemoMode.stop(): {
-			[demoState == DemoState.Started] blocking {
+			[demoState == DemoState.Started] {
 				iRGBLed.dim();
-				timeoutPending = iTimer.cancel();
-				if(timeoutPending) {
-					demoState = DemoState.Stopping;
-				}
-				else {
-					demoState = DemoState.Stopped;
-					iDemoMode.reply();
-				}
+				iTimer.cancel();
+				demoState = DemoState.Stopped;
 			}
 		}
 		
@@ -74,12 +67,6 @@ component DemoMode {
 					iTimer.start($1000$);
 				} 
 			}
-			[demoState == DemoState.Stopping] {
-				demoState = DemoState.Stopped;
-				timeoutPending = false;
-				iDemoMode.reply();
-			}
-			[demoState == DemoState.Stopped] { /* DemoState is stopped, timeouts can be safely ignored */ }
 		}
 	}
 }
