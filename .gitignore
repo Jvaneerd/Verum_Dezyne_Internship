@@ -36,3 +36,6 @@ Generated/
 
 # bin folder
 bin/
+
+# netatalk files
+*.AppleDouble*
