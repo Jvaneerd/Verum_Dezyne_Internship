@@ -37,8 +37,8 @@ Generated/
 # bin folder
 bin/
 
-# makefile .depend folder
-*.depend*
+# makefile dependancy files
+*.d
 
 # netatalk files
 *.AppleDouble*
