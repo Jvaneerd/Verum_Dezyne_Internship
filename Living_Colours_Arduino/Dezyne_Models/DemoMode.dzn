@@ -2,31 +2,20 @@ import Timer.dzn;
 import RGBLed.dzn;
 
 interface IDemoMode {
-	in bool start();
+	in void start();
 	in void stop();
 	
 	behaviour {
-		enum DemoState { Started, Stopping, Stopped };
+		enum DemoState { Started, Stopped };
 		DemoState demoState = DemoState.Stopped;
 		on start: {
 			[demoState == DemoState.Started] illegal;
-			[demoState == DemoState.Stopping] reply(false);
-			[demoState == DemoState.Stopped] {
-				demoState = DemoState.Started;
-				reply(true);
-			}
+			[demoState == DemoState.Stopped] demoState = DemoState.Started;
 		} 
 		
 		on stop: {
-			[demoState == DemoState.Started] demoState = DemoState.Stopping;
-			[demoState == DemoState.Stopping] illegal;
+			[demoState == DemoState.Started] demoState = DemoState.Stopped;
 			[demoState == DemoState.Stopped] illegal;
-		}
-		
-		[demoState == DemoState.Stopping] {
-			on inevitable: {
-				demoState = DemoState.Stopped;
-			}
 		}
 	}
 }
@@ -48,15 +37,11 @@ component DemoMode {
 				demoState = DemoState.Started;
 				iRGBLed.setRed();
 				iTimer.start($1000$);
-				reply(true);
-			}
-			[demoState == DemoState.Stopping] {
-				reply(false);
 			}
 		} 
 		
 		on iDemoMode.stop(): {
-			[demoState == DemoState.Started] {
+			[demoState == DemoState.Started] blocking {
 				iRGBLed.dim();
 				timeoutPending = iTimer.cancel();
 				if(timeoutPending) {
@@ -64,6 +49,7 @@ component DemoMode {
 				}
 				else {
 					demoState = DemoState.Stopped;
+					iDemoMode.reply();
 				}
 			}
 		}
@@ -91,6 +77,7 @@ component DemoMode {
 			[demoState == DemoState.Stopping] {
 				demoState = DemoState.Stopped;
 				timeoutPending = false;
+				iDemoMode.reply();
 			}
 			[demoState == DemoState.Stopped] { /* DemoState is stopped, timeouts can be safely ignored */ }
 		}
