@@ -1,0 +1,88 @@
+import Timer.dzn;
+import RgbLed.dzn;
+
+interface IDemoMode {
+	in void start();
+	in void stop();
+	
+	behaviour {
+		bool isRunning = false;
+		on start: {
+			[isRunning] illegal;
+			[!isRunning] isRunning = true;
+		} 
+		
+		on stop: {
+			[isRunning] isRunning = false;
+			[!isRunning] illegal;
+		}
+	}
+}
+
+component DemoMode {
+	provides IDemoMode iDemoMode;
+	requires ITimer iTimer;
+	requires IRGBLed iRGBLed;
+
+	behaviour {
+		enum RgbState { Red, Green, Blue };
+		RgbState rgbState = RgbState.Red;
+		bool isRunning = false;
+		
+		void setRed() {
+  			iRGBLed.setRed($255$);
+			iRGBLed.setGreen($0$);
+			iRGBLed.setBlue($0$);
+		}
+		
+		void setGreen() {
+  			iRGBLed.setRed($0$);
+			iRGBLed.setGreen($255$);
+			iRGBLed.setBlue($0$);
+		}
+		
+		void setBlue() {
+  			iRGBLed.setRed($0$);
+			iRGBLed.setGreen($0$);
+			iRGBLed.setBlue($255$);
+		}
+
+		on iDemoMode.start(): {
+			[!isRunning] {
+				setRed();
+				iTimer.start($1$);
+				isRunning = true;
+			}
+		}
+
+		on iDemoMode.stop(): {
+			[isRunning] {
+				iRGBLed.dim();
+				iTimer.cancel();
+				isRunning = false;
+			}
+		}
+
+		on iTimer.timeout(): {
+			[isRunning] {
+				[rgbState == RgbState.Red] {
+					rgbState = RgbState.Green;
+					setGreen();
+					iTimer.start($1$);
+				}
+
+				[rgbState == RgbState.Green] {
+					rgbState = RgbState.Blue;
+					setBlue();
+					iTimer.start($1$);
+				}
+
+				[rgbState == RgbState.Blue] {
+					rgbState = RgbState.Red;
+					setRed();
+					iTimer.start($1$);
+				}
+			}
+		}
+	}
+}

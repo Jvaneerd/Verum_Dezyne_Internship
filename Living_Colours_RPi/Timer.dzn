@@ -1,6 +1,6 @@
 interface ITimer {
-	extern long_integer $long$;
-	in void start(long_integer ms);
+	extern integer $int$;
+	in void start(integer s);
 	in void cancel();
 	out void timeout();
 	

@@ -1,31 +1,33 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Ilib -lwiringPi -include src/Handwritten/external_types.hh
+CXXFLAGS = -std=c++11 -I$(RUNTIME) -I$(SRC) -lwiringPi -include $(SRC)/external_types.hh
+CPPFLAGS = -MMD -MF $(@:%.o=%.d) -MT '$(@:%.o=%.d) $@' -I$(SRC) -I$(RUNTIME)
 LDFLAGS = -lpthread
 RM = rm -f
 TARGET = dznpi
 
-SRCS = $(wildcard src/Handwritten/*.cc)
-SRCS += $(wildcard src/Generated/*.cc)
-SRCS += $(wildcard lib/*.cc)
+SRC = ./src
+RUNTIME = ./lib
+
+SRCS = $(wildcard $(SRC)/*.cc)
+SRCS += $(wildcard $(RUNTIME)/*.cc)
 
 OBJS = $(subst .cc,.o,$(SRCS))
 
-all: dznpi
+all: generate
+	make $(TARGET)
 
-dznpi: $(OBJS)
+$(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-depend: .depend
-
-.depend: $(SRCS)
-	$(RM) ./.depend
-	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
+generate: $(wildcard *.dzn)
+	for f in $^; do dzn -v code -l c++ -o $(SRC) --depends=.d $$f; done
+	touch $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(filter-out runtime.o pump.o, $(OBJS))
 	$(RM) $(TARGET)
 
 distclean: clean
-	$(RM) *~ .depend
+	$(RM) *~
 
-include .depend
+-include $(wildcard $(SRC)/*.d $(RUNTIME)/*.d)
