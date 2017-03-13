@@ -1,5 +1,3 @@
-import Pollable.dzn;
-
 interface ISensor {
 	in void turnOn();
 	in void turnOff();

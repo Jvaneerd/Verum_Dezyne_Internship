@@ -3,7 +3,6 @@ import LED.dzn;
 import Siren.dzn;
 import Timer.dzn;
 import Sensor.dzn;
-import Pollable.dzn;
 
 component AlarmSystem {
 	provides IController iController;
