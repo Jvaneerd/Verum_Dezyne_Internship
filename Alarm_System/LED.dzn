@@ -2,26 +2,13 @@ interface ILED {
 	in void setGreen();
 	in void setYellow();
 	in void setRed();
+	in void turnOff();
 
 	behaviour {
-		on setGreen, setYellow, setRed: {}
+		on setGreen, setYellow, setRed, turnOff: {}
 	}
 }
 
 component LED {
 	provides ILED iLED;
-	
-	behaviour {
-		enum State { Green, Yellow, Red };
-		State state = State.Green;
-		on iLED.setGreen(): {
-			state = State.Green;
-		}
-		on iLED.setYellow(): {
-			state = State.Yellow;
-		}
-		on iLED.setRed(): {
-			state = State.Red;
-		}
-	}
 }

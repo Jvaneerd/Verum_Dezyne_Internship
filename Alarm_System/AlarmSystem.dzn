@@ -3,21 +3,24 @@ import LED.dzn;
 import Siren.dzn;
 import Timer.dzn;
 import Sensor.dzn;
+import Pollable.dzn;
 
 component AlarmSystem {
 	provides IController iController;
+	requires ITimer iTimer;
+	requires IPasswordManager iPasswordManager;
 	
 	system {
 		Controller controller;
 		LED led;
 		Siren siren;
-		Timer timer;
 		Sensor sensor;
 		
 		iController <=> controller.iController;
 		controller.iLED <=> led.iLED;
 		controller.iSiren <=> siren.iSiren;
-		controller.iTimer <=> timer.iTimer;
+		controller.iTimer <=> iTimer;
 		controller.iSensor <=> sensor.iSensor;
+		controller.iPasswordManager <=> iPasswordManager;
 	}
 }

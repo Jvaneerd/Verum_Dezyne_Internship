@@ -1,3 +1,5 @@
+import Pollable.dzn;
+
 interface ISensor {
 	in void turnOn();
 	in void turnOff();
@@ -29,6 +31,4 @@ interface ISensor {
 
 component Sensor {
 	provides ISensor iSensor;
-	behaviour {
-	}
 }
