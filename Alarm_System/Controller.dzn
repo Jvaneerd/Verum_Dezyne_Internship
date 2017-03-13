@@ -2,17 +2,28 @@ import Sensor.dzn;
 import LED.dzn;
 import Siren.dzn;
 import Timer.dzn;
+import PasswordManagement.dzn;
 
 interface IController {
-	in void validPincode();
-
+	in void start();
+	in void stop();
+	
 	behaviour {
-		on validPincode: {}
+		bool isRunning = false;
+		[!isRunning] { 
+			on start: isRunning = true;
+			on stop: illegal;
+		}
+		[isRunning] {
+			on start: illegal;
+			on stop: isRunning = false;
+		}
 	}
 }
 
 component Controller {
 	provides IController iController;
+	requires IPasswordManager iPasswordManager;
 	requires ISensor iSensor;
 	requires ILED iLED;
 	requires ISiren iSiren;
@@ -20,43 +31,67 @@ component Controller {
 	
 	behaviour {
 		enum State { Unarmed, Armed, Alarming };
+		bool isRunning = false;
 		State state = State.Unarmed;
-		
-		[state.Unarmed] {
-			on iController.validPincode(): {
-				iSensor.turnOn();
-				state = State.Armed;
-				iLED.setYellow();
-			}
-			on iSensor.trigger(): {}
-		}
-		
-		[state.Armed] {
-			on iSensor.trigger(): {
-				iSensor.turnOff();
-				state = State.Alarming;
-				iTimer.start($30000$);
-				iLED.setRed();
-			}
-			on iController.validPincode(): {
-				iSensor.turnOff();
-				state = State.Unarmed;
+		[!isRunning] {	
+			on iController.start(): {
+				isRunning = true;
 				iLED.setGreen();
 			}
+			on iPasswordManager.PasswordEntered(pw): {}
+			on iSensor.trigger(): {}
 		}
-		
-		[state.Alarming] {
-			on iController.validPincode(): {
-				iSensor.turnOn();
-				state = State.Armed;
+		[isRunning] {
+			[state.Unarmed] {
+				on iPasswordManager.PasswordEntered(pw): {
+					bool correctPassword = iPasswordManager.VerifyPassword(pw);
+					if(correctPassword) {
+						iSensor.turnOn();
+						iLED.setYellow();
+						state = State.Armed;
+					}
+				}
+				on iSensor.trigger(): {}
+			}
+			
+			[state.Armed] {
+				on iSensor.trigger(): {
+					iSensor.turnOff();
+					iTimer.start($30$);
+					iLED.setRed();
+					state = State.Alarming;
+				}
+				on iPasswordManager.PasswordEntered(pw): {
+					bool correctPassword = iPasswordManager.VerifyPassword(pw);
+					if(correctPassword) {
+						iSensor.turnOff();
+						iLED.setGreen();
+						state = State.Unarmed;
+					}
+				}
+			}
+			
+			[state.Alarming] {
+				on iPasswordManager.PasswordEntered(pw): {
+					bool correctPassword = iPasswordManager.VerifyPassword(pw);
+					if(correctPassword) {
+						iSensor.turnOn();
+						iTimer.cancel();
+						iSiren.turnOff();
+						iLED.setYellow();
+						state = State.Armed;
+					}
+				}
+				on iTimer.timeout(): {
+					iSiren.turnOn();
+				}
+				on iSensor.trigger(): illegal;
+			}
+			on iController.stop(): {
+				iLED.turnOff();
 				iTimer.cancel();
-				iSiren.turnOff();
-				iLED.setYellow();
+				isRunning = false;
 			}
-			on iTimer.timeout(): {
-				iSiren.turnOn();
-			}
-			on iSensor.trigger(): illegal;
 		}
 	}
 }

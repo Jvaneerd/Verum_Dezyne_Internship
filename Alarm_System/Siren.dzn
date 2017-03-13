@@ -8,7 +8,4 @@ interface ISiren {
 
 component Siren {
 	provides ISiren iSiren;
-	behaviour {
-		
-	}
 }

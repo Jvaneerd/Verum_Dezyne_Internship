@@ -37,7 +37,8 @@ Generated/
 # bin folder
 bin/
 
-# makefile dependancy files
+# makefile .depend folder
+*.depend*
 *.d
 
 # netatalk files
