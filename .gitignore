@@ -39,6 +39,7 @@ bin/
 
 # makefile .depend folder
 *.depend*
+*.d
 
 # netatalk files
 *.AppleDouble*
