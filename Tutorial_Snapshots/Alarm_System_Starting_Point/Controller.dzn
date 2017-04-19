@@ -1,0 +1,98 @@
+import LED.dzn;
+import PasswordManagement.dzn;
+import Sensor.dzn;
+import Siren.dzn;
+import Timer.dzn;
+
+interface IController {
+	in void start();
+	in void stop();
+	
+	behaviour {
+		bool isRunning = false;
+		[!isRunning] { 
+			on start: isRunning = true;
+			on stop: illegal;
+		}
+		[isRunning] {
+			on start: illegal;
+			on stop: isRunning = false;
+		}
+	}
+}
+
+
+component Controller {
+	provides IController iController;
+	requires ILED iLed;
+	requires IPasswordManager iPasswordManager;
+	requires ISensor iSensor;
+	requires ISiren iSiren;
+	requires ITimer iTimer;
+
+	behaviour {
+		enum State { Unarmed, Armed, Alarming };
+		State state = State.Unarmed;
+		bool isRunning = false;
+	
+		[!isRunning] {
+			on iController.start(): {
+				isRunning = true;
+				state = State.Unarmed;
+				iLed.setGreen();
+		  	}
+		  	on iPasswordManager.PasswordEntered(s): {}
+		  	on iSensor.triggered(): {}
+		}
+		[isRunning] {
+			on iPasswordManager.PasswordEntered(s): {
+			   	bool pwCorrect = iPasswordManager.VerifyPassword(s);
+			   	if(pwCorrect) {
+					if(state == State.Unarmed) {
+						state = State.Armed;
+						iLed.setYellow();
+						iSensor.turnOn();
+					}
+					else if(state == State.Armed) {
+						state = State.Unarmed;
+						iLed.setGreen();
+						iSensor.turnOff();
+					}
+					else if(state == State.Alarming) {
+				 		state = State.Armed;
+				  		iLed.setYellow();
+				  		iSensor.turnOn();
+				  		iTimer.cancel();
+				  		iSiren.turnOff();
+					}
+				}
+			}
+			
+			on iSensor.triggered(): {
+				[state.Armed] {
+					state = State.Alarming;
+					iLed.setRed();
+					iSensor.turnOff();
+					iTimer.start($30$);
+				}
+				[otherwise] illegal;
+			}
+			
+			on iTimer.timeout(): {
+				[state.Alarming] {
+					iSiren.turnOn();
+				}
+				[otherwise] illegal;
+			}
+			
+			on iController.stop(): {
+				isRunning = false;
+				iLed.turnOff();
+				iTimer.cancel();
+				iSiren.turnOff();
+				if(state == State.Armed) iSensor.turnOff();				
+				state = State.Unarmed;
+			}
+		}
+	}
+}
