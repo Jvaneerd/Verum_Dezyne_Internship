@@ -23,8 +23,6 @@ ColourSupplier::ColourSupplier(const dzn::locator& dezyne_locator) : skel::Colou
 void ColourSupplier::iColourSupplier_toggle()
 {
   currentPreset = (currentPreset + 1) % presets.size();
-  // currentPreset++;
-  // if(currentPreset == presets.size()) currentPreset = 0;
 }
 
 void ColourSupplier::iColourSupplier_getColour(Colour& colour)

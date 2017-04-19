@@ -33,7 +33,6 @@ void Sensor::poll() {
   int new_sensor_value = !digitalRead(PIN_SENSOR);
 
   if (new_sensor_value != this->last_sensor_value) {
-    std::cout << "Change detected" << std::endl;
     this->last_dbnc_time = millis();
   }
 
