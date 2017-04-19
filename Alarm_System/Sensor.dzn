@@ -2,7 +2,7 @@ interface ISensor {
 	in void turnOn();
 	in void turnOff();
 
-	out void trigger();
+	out void triggered();
 
 	behaviour {
 		enum State { Off, Sensing, Triggered };
@@ -16,7 +16,7 @@ interface ISensor {
 			on turnOn: illegal;
 			on turnOff: state = State.Off;
 			on optional: {
-				trigger;
+				triggered;
 				state = State.Triggered;
 			}
 		}
