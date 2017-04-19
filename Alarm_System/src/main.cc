@@ -37,11 +37,10 @@ main(int argc, char* argv[])
   signal(SIGINT, sigint_handler);
   signal(SIGALRM, sigalrm_handler);
 
-  as.iController.in.start();
-
   as.iPasswordManager.in.VerifyPassword = [](std::string pw){ return pw.compare(password) == 0; };
 
-
+  as.check_bindings();
+  as.iController.in.start();
 
   std::string input;
   while(std::cin >> input) {
