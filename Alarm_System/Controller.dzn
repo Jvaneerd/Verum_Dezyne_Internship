@@ -39,7 +39,7 @@ component Controller {
 				iLED.setGreen();
 			}
 			on iPasswordManager.PasswordEntered(pw): {}
-			on iSensor.trigger(): {}
+			on iSensor.triggered(): {}
 		}
 		[isRunning] {
 			[state.Unarmed] {
@@ -51,11 +51,11 @@ component Controller {
 						state = State.Armed;
 					}
 				}
-				on iSensor.trigger(): {}
+				on iSensor.triggered(): {}
 			}
 			
 			[state.Armed] {
-				on iSensor.trigger(): {
+				on iSensor.triggered(): {
 					iSensor.turnOff();
 					iTimer.start($30$);
 					iLED.setRed();
@@ -85,12 +85,14 @@ component Controller {
 				on iTimer.timeout(): {
 					iSiren.turnOn();
 				}
-				on iSensor.trigger(): illegal;
+				on iSensor.triggered(): illegal;
 			}
 			on iController.stop(): {
 				iLED.turnOff();
 				iTimer.cancel();
 				isRunning = false;
+				if(state == State.Armed) iSensor.turnOff();
+				state = State.Unarmed;
 			}
 		}
 	}

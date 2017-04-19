@@ -1,5 +1,5 @@
 import LED.dzn;
-import PasswordManager.dzn;
+import PasswordManagement.dzn;
 import Sensor.dzn;
 import Siren.dzn;
 import Timer.dzn;
