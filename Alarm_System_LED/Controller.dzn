@@ -1,0 +1,46 @@
+import LED.dzn;
+
+interface IController {
+  in void validPincode();
+  in void sensorTriggered();
+
+  behaviour {
+    on validPincode: {}
+    on sensorTriggered: {}
+  }
+}
+
+component Controller {
+  provides IController iController;
+  requires ILED iLed;
+
+  behaviour {
+    enum State { Unarmed, Armed, Alarming };
+    State state = State.Unarmed;
+
+    [state.Unarmed] {
+      on iController.validPincode(): {
+        state = State.Armed;
+        iLed.setYellow();
+      }
+      on iController.sensorTriggered(): {}
+    }
+    [state.Armed] {
+      on iController.validPincode(): {
+        state = State.Unarmed;
+        iLed.setGreen();
+      }
+      on iController.sensorTriggered(): {
+      	state = State.Alarming;
+      	iLed.setRed();
+      }
+    }
+    [state.Alarming] {
+      on iController.validPincode(): {
+        state = State.Armed;
+        iLed.setYellow();
+      }
+      on iController.sensorTriggered(): {}
+    }
+  }
+}
