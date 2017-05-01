@@ -5,6 +5,12 @@ CPPFLAGS = -MMD -MF $(@:%.o=%.d) -MT '$(@:%.o=%.d) $@' -I$(SRC) -I$(RUNTIME) -I$
 LDFLAGS = -lpthread
 RM = rm -f
 TARGET = dznpi
+VERSION=2.3.2
+CURRENT:=$(shell dzn query | grep '*' | sed 's,\* ,,')
+
+ifneq ($(VERSION),$(CURRENT))
+$(info current version: $(CURRENT) is not equal to selected version: $(VERSION))
+endif
 
 SRC = ./src
 RUNTIME = ./lib
@@ -21,8 +27,14 @@ all: generate
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
+runtime:
+	for f in $(shell dzn ls -R /share/runtime/c++ | sed 's,/c++/,,' | tail -n +3); do \
+	dzn cat --version=$(VERSION) /share/runtime/c++/$$f > lib/$$f; \
+	done
+	touch runtime
+
 generate: $(wildcard *.dzn)
-	for f in $^; do dzn -v code -l c++ -o $(SRC) --depends=.d $$f; done
+	for f in $^; do dzn -v code --version=$(VERSION) -l c++ -o $(SRC) --depends=.d $$f; done
 	touch $@
 
 clean:
