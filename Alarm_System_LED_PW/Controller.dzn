@@ -1,0 +1,49 @@
+import LED.dzn;
+import PWManager.dzn;
+
+interface IController {
+  in void passwordEntered(String pw);
+  in void sensorTriggered();
+
+  behaviour {
+    on passwordEntered: {}
+    on sensorTriggered: {}
+  }
+}
+
+component Controller {
+  provides IController iController;
+  requires ILED iLed;
+  requires IPWManager iPWManager;
+
+  behaviour {
+    enum State { Unarmed, Armed, Alarming };
+    State state = State.Unarmed;
+
+	on iController.passwordEntered(pw): {
+		bool pwCorrect = iPWManager.verifyPassword(pw);
+		if(pwCorrect) {
+			if(state == State.Unarmed) {
+				state = State.Armed;
+        		iLed.setYellow();
+			}
+			else if(state == State.Armed) {
+				state = State.Unarmed;
+        		iLed.setGreen();
+			}
+			else if(state == State.Alarming) {
+				state = State.Armed;
+        		iLed.setYellow();
+			}
+		}
+	}
+	
+	on iController.sensorTriggered(): {
+		[state.Armed] {
+			state = State.Alarming;
+      		iLed.setRed();
+		}
+		[otherwise] { /* no-op */}
+	}
+  }
+}
