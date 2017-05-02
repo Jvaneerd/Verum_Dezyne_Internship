@@ -41,7 +41,10 @@ clean:
 	$(RM) $(filter-out runtime.o pump.o, $(OBJS))
 	$(RM) $(TARGET)
 
-distclean: clean
+clean_generated:
+	$(RM) `grep -h dzn src/*.dzn.d | sed -e 's,:.*,,' -e 's,%,.,g'`
+
+distclean: clean clean_generated
 	$(RM) *~
 
 -include $(wildcard $(SRC)/*.d $(RUNTIME)/*.d)
