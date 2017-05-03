@@ -32,7 +32,7 @@ main(int argc, char* argv[])
   as.iSensor.in.turnOn = [&](){ sensorPolling = true; };
   as.iSensor.in.turnOff = [&](){ sensorPolling = false; };
 
-  as.iTimer.in.start = [](int milliseconds){ alarm(milliseconds/10000); };  // ITimer is in milliseconds, but alarm is in seconds
+  as.iTimer.in.start = [](int milliseconds){ alarm(milliseconds/1000); };  // ITimer is in milliseconds, but alarm is in seconds
   as.iTimer.in.cancel = []{ alarm(0); };
   timeout = as.iTimer.out.timeout;
   signal(SIGALRM, sigalrm_handler);
