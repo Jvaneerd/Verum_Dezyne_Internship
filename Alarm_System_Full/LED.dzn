@@ -10,5 +10,5 @@ interface ILED {
 }
 
 component LED {
-	provides ILED iLED;
+	provides ILED iLed;
 }

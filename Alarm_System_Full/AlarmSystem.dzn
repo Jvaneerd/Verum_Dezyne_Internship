@@ -1,26 +1,26 @@
 import Controller.dzn;
 import LED.dzn;
+import PWManager.dzn;
 import Siren.dzn;
-import Timer.dzn;
 import Sensor.dzn;
-import PasswordManager.dzn;
+import Timer.dzn;
 
 component AlarmSystem {
 	provides IController iController;
-	requires IPasswordManager iPasswordManager;
+	requires IPWManager iPWManager;
+	requires ITimer iTimer;
+	requires ISensor iSensor;
 	
 	system {
 		Controller controller;
 		LED led;
 		Siren siren;
-		Sensor sensor;
-		Timer timer;
 		
 		iController <=> controller.iController;
-		controller.iLED <=> led.iLED;
+		controller.iLED <=> led.iLed;
+		controller.iPWManager <=> iPWManager;
+		controller.iTimer <=> iTimer;
 		controller.iSiren <=> siren.iSiren;
-		controller.iTimer <=> timer.iTimer;
-		controller.iSensor <=> sensor.iSensor;
-		controller.iPasswordManager <=> iPasswordManager;
+		controller.iSensor <=> iSensor;
 	}
 }

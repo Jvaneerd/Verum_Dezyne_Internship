@@ -30,7 +30,7 @@ main(int argc, char* argv[])
 
   AlarmSystem as(loc.set(rt).set(pump));
   stop =  as.iController.in.stop;
-  as.iTimer.in.start = [](int sec) { alarm(sec); };
+  as.iTimer.in.start = [](int milliseconds) { alarm(milliseconds/1000); };  // ITimer is in milliseconds, but alarm is in seconds
   as.iTimer.in.cancel = []{ alarm(0); };
   timeout = as.iTimer.out.timeout;
 

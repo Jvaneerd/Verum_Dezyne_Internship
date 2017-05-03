@@ -30,12 +30,16 @@
 
 # Eclipse files
 *.project
+*.metadata
 
 # Generated code
 Generated/
 
 # bin folder
 bin/
+
+# Dezyne runtime
+lib/
 
 # makefile .depend folder
 *.depend*

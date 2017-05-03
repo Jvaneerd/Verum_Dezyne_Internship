@@ -24,7 +24,7 @@ interface IController {
 
 component Controller {
 	provides IController iController;
-	requires ILED iLed;
+	requires ILED iLED;
 	requires IPasswordManager iPasswordManager;
 	requires ISensor iSensor;
 	requires ISiren iSiren;
@@ -39,7 +39,7 @@ component Controller {
 			on iController.start(): {
 				isRunning = true;
 				state = State.Unarmed;
-				iLed.setGreen();
+				iLED.setGreen();
 		  	}
 		  	on iPasswordManager.PasswordEntered(s): {}
 		  	on iSensor.triggered(): {}
@@ -50,17 +50,17 @@ component Controller {
 			   	if(pwCorrect) {
 					if(state == State.Unarmed) {
 						state = State.Armed;
-						iLed.setYellow();
+						iLED.setYellow();
 						iSensor.turnOn();
 					}
 					else if(state == State.Armed) {
 						state = State.Unarmed;
-						iLed.setGreen();
+						iLED.setGreen();
 						iSensor.turnOff();
 					}
 					else if(state == State.Alarming) {
 				 		state = State.Armed;
-				  		iLed.setYellow();
+				  		iLED.setYellow();
 				  		iSensor.turnOn();
 				  		iTimer.cancel();
 				  		iSiren.turnOff();
@@ -71,7 +71,7 @@ component Controller {
 			on iSensor.triggered(): {
 				[state.Armed] {
 					state = State.Alarming;
-					iLed.setRed();
+					iLED.setRed();
 					iSensor.turnOff();
 					iTimer.start($30$);
 				}
@@ -87,7 +87,7 @@ component Controller {
 			
 			on iController.stop(): {
 				isRunning = false;
-				iLed.turnOff();
+				iLED.turnOff();
 				iTimer.cancel();
 				iSiren.turnOff();
 				if(state == State.Armed) iSensor.turnOff();				

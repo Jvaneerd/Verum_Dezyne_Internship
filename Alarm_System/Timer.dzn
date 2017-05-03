@@ -23,5 +23,3 @@ interface ITimer {
 		}
 	}
 }
-
-component Timer { provides ITimer iTimer; }

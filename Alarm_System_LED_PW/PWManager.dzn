@@ -1,0 +1,10 @@
+extern String $std::string$;
+
+interface IPWManager {
+	in bool verifyPassword(String pw);
+	
+	behaviour {
+		on verifyPassword: reply(true);
+		on verifyPassword: reply(false);
+	}
+}

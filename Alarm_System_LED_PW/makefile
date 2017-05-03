@@ -1,6 +1,6 @@
 #CXX = g++
 CXX = arm-linux-gnueabihf-g++
-CXXFLAGS = -std=c++11 -I$(RUNTIME) -I$(SRC) -include $(SRC)/external_types.hh -L $(CROSSINCLUDE)lib/ -lwiringPi -lrt
+CXXFLAGS = -std=c++11 -I$(RUNTIME) -I$(SRC) -L $(CROSSINCLUDE)lib/ -lwiringPi -lrt
 CPPFLAGS = -MMD -MF $(@:%.o=%.d) -MT '$(@:%.o=%.d) $@' -I$(SRC) -I$(RUNTIME) -I$(CROSSINCLUDE)include/
 LDFLAGS = -lpthread
 RM = rm -f
@@ -41,10 +41,7 @@ clean:
 	$(RM) $(filter-out runtime.o pump.o, $(OBJS))
 	$(RM) $(TARGET)
 
-clean_generated:
-	$(RM) `grep -h dzn src/*.dzn.d | sed -e 's,:.*,,' -e 's,%,.,g'`
-
-distclean: clean clean_generated
+distclean: clean
 	$(RM) *~
 
 -include $(wildcard $(SRC)/*.d $(RUNTIME)/*.d)

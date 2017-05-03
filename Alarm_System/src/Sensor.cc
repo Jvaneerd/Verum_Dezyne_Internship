@@ -41,7 +41,7 @@ void Sensor::poll() {
     if(new_sensor_value != this->sensor_value) {
       this->sensor_value = new_sensor_value;
       if(this->sensor_value) {
-        this->pump( [&] { this->iSensor.out.trigger(); } );
+        this->pump( [&] { this->iSensor.out.triggered(); } );
       }
     }
   }

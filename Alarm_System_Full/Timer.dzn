@@ -1,7 +1,7 @@
 interface ITimer {
-	extern Integer $int$;
+	extern Long_Integer $long$;
 	enum State { Idle, Running };
-	in void start(Integer seconds);
+	in void start(Long_Integer milliseconds);
 	in void cancel();
 	out void timeout();
 
@@ -23,5 +23,3 @@ interface ITimer {
 		}
 	}
 }
-
-component Timer { provides ITimer iTimer; }
