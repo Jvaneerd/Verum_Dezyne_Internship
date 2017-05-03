@@ -7,18 +7,18 @@ import Sensor.dzn;
 component AlarmSystem {
 	provides IController iController;
 	requires IPasswordManager iPasswordManager;
+	requires ITimer iTimer;
 	
 	system {
 		Controller controller;
 		LED led;
 		Siren siren;
 		Sensor sensor;
-		Timer timer;
 		
 		iController <=> controller.iController;
 		controller.iLED <=> led.iLED;
 		controller.iSiren <=> siren.iSiren;
-		controller.iTimer <=> timer.iTimer;
+		controller.iTimer <=> iTimer;
 		controller.iSensor <=> sensor.iSensor;
 		controller.iPasswordManager <=> iPasswordManager;
 	}
