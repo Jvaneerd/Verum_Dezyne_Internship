@@ -62,7 +62,6 @@ component Controller {
 		[state.Alarming] {
 			iSiren.turnOn();
 		}
-		[otherwise] illegal;
 	}
   }
 }
