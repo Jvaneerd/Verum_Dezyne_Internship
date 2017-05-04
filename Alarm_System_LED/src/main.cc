@@ -16,6 +16,7 @@ main(int argc, char* argv[])
   dzn::runtime rt;
 
   AlarmSystem as(loc.set(rt).set(pump));
+  as.dzn_meta.name = "AlarmSystem";
 
   as.check_bindings();
 
