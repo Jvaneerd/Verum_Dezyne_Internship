@@ -12,10 +12,11 @@ int
 main(int argc, char* argv[])
 {
   dzn::locator loc;
-  dzn::pump pump;
   dzn::runtime rt;
 
-  AlarmSystem as(loc.set(rt).set(pump));
+  loc.set(rt);
+
+  AlarmSystem as(loc);
   as.dzn_meta.name = "AlarmSystem";
 
   as.check_bindings();
