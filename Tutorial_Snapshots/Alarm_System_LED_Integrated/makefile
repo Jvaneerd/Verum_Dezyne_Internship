@@ -1,7 +1,6 @@
-#CXX = g++
-CXX = arm-linux-gnueabihf-g++
-CXXFLAGS = -std=c++11 -I$(RUNTIME) -I$(SRC) -L $(CROSSINCLUDE)lib/ -lwiringPi -lrt
-CPPFLAGS = -MMD -MF $(@:%.o=%.d) -MT '$(@:%.o=%.d) $@' -I$(SRC) -I$(RUNTIME) -I$(CROSSINCLUDE)include/
+CXX = g++
+CXXFLAGS = -std=c++11 -I$(RUNTIME) -I$(SRC) -lwiringPi -lrt
+CPPFLAGS = -MMD -MF $(@:%.o=%.d) -MT '$(@:%.o=%.d) $@' -I$(SRC) -I$(RUNTIME)
 LDFLAGS = -lpthread
 RM = rm -rf
 TARGET = dznpi
@@ -14,7 +13,6 @@ endif
 
 SRC = ./src
 RUNTIME = ./lib
-CROSSINCLUDE = /usr/local/linaro/arm-linux-gnueabihf-raspbian/
 
 SRCS = $(wildcard $(SRC)/*.cc)
 SRCS += $(wildcard $(RUNTIME)/*.cc)
