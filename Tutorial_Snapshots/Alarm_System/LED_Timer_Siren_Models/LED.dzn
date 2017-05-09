@@ -1,0 +1,14 @@
+interface ILED {
+	in void setGreen();
+	in void setYellow();
+	in void setRed();
+	in void turnOff();
+
+	behaviour {
+		on setGreen, setYellow, setRed, turnOff: {}
+	}
+}
+
+component LED {
+	provides ILED iLed;
+}

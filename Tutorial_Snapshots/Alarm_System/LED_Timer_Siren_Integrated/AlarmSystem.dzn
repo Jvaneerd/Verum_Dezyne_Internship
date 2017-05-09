@@ -1,0 +1,20 @@
+import Controller.dzn;
+import LED.dzn;
+import Timer.dzn;
+import Siren.dzn;
+
+component AlarmSystem {
+	provides IController iController;
+	requires ITimer iTimer;
+	
+	system {
+		Controller controller;
+		LED led;
+		Siren siren;
+		
+		iController <=> controller.iController;
+		controller.iLed <=> led.iLed;
+		controller.iTimer <=> iTimer;
+		controller.iSiren <=> siren.iSiren;
+	}
+}
