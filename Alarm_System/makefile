@@ -15,7 +15,7 @@ SRCS += $(wildcard $(RUNTIME)/*.cc)
 
 OBJS = $(subst .cc,.o,$(SRCS))
 
-all: generate
+all:
 	make $(TARGET)
 
 $(TARGET): $(OBJS)
