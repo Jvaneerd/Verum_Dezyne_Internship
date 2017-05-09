@@ -1,0 +1,14 @@
+import Controller.dzn;
+import LED.dzn;
+
+component AlarmSystem {
+	provides IController iController;
+	
+	system {
+		Controller controller;
+		LED led;
+		
+		iController <=> controller.iController;
+		controller.iLed <=> led.iLed;
+	}
+}
