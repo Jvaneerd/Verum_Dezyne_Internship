@@ -1,0 +1,11 @@
+interface ISiren {
+	in void turnOn();
+	in void turnOff();
+	behaviour {
+		on turnOn, turnOff: {}
+	}
+}
+
+component Siren {
+	provides ISiren iSiren;
+}

@@ -1,0 +1,69 @@
+import LED.dzn;
+import Timer.dzn;
+import Siren.dzn;
+import PWManager.dzn;
+
+interface IController {
+  in void passwordEntered(String pw);
+  in void sensorTriggered();
+
+  behaviour {
+    on passwordEntered: {}
+    on sensorTriggered: {}
+  }
+}
+
+component Controller {
+  provides IController iController;
+  requires ITimer iTimer;
+  requires ISiren iSiren;
+  requires ILED iLed;
+  requires IPWManager iPWManager;
+
+  behaviour {
+    enum State { Unarmed, Armed, Alarming };
+    State state = State.Unarmed;
+
+    [state.Unarmed] {
+      on iController.passwordEntered(pw): {
+      	bool valid = iPWManager.verifyPassword(pw);
+      	if(valid) {
+	        state = State.Armed;
+	        iLed.setYellow();
+        }
+      }
+      on iController.sensorTriggered(): {}
+      on iTimer.timeout(): illegal;
+    }
+    [state.Armed] {
+      on iController.passwordEntered(pw): {
+      	bool valid = iPWManager.verifyPassword(pw);
+      	if(valid) {
+	        state = State.Unarmed;
+	        iLed.setGreen();
+      	}
+      }
+      on iController.sensorTriggered(): {
+      	state = State.Alarming;
+      	iTimer.start($30000$);
+      	iLed.setRed();
+      }
+      on iTimer.timeout(): illegal;
+    }
+    [state.Alarming] {
+      on iController.passwordEntered(pw): {
+      	bool valid = iPWManager.verifyPassword(pw);
+      	if(valid) {
+	        state = State.Armed;
+	        iLed.setYellow();
+	        iSiren.turnOff();
+	        iTimer.cancel();
+        }
+      }
+      on iController.sensorTriggered(): {}
+      on iTimer.timeout(): {
+      	iSiren.turnOn();
+      }
+    }
+  }
+}
