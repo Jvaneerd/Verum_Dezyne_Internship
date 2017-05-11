@@ -21,7 +21,7 @@ void pm_Stop(IPotMeter *self) {
 
 bool pm_CheckChanges() {
   int potValue = analogRead(MIX_POT_PIN);
-  int mappedPotValue = map(potValue, 20, 1023, 0, 255);
+  int mappedPotValue = map(potValue, 0, 1023, 0, 255);
 
   if (currentValue != mappedPotValue) {
     currentValue = mappedPotValue;
