@@ -32,6 +32,8 @@ void arduinoSetup() {
 }
 
 int main() {
+  init();
+  arduinoSetup();
   runtime dezyne_runtime;
   runtime_init(&dezyne_runtime);
 
@@ -53,8 +55,6 @@ int main() {
   lc.iPotMeter->in.start = pm_Start;
   lc.iPotMeter->in.stop = pm_Stop;
 
-  init();
-  arduinoSetup();
 
   lc.iController->in.begin(lc.iController);
 

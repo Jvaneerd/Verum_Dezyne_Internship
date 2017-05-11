@@ -4,82 +4,69 @@ import RGBLed.dzn;
 interface IDemoMode {
 	in void start();
 	in void stop();
-	
+
 	behaviour {
-		enum DemoState { Started, Stopped };
-		DemoState demoState = DemoState.Stopped;
+		enum State { Red, Green, Blue };
+		State state = State.Red;
+		bool isRunning = false;
 		on start: {
-			[demoState == DemoState.Started] illegal;
-			[demoState == DemoState.Stopped] demoState = DemoState.Started;
-		} 
-		
+			[isRunning] illegal;
+			[!isRunning] isRunning = true;
+		}
+
 		on stop: {
-			[demoState == DemoState.Started] demoState = DemoState.Stopped;
-			[demoState == DemoState.Stopped] illegal;
+			[isRunning] isRunning = false;
+			[!isRunning] illegal;
 		}
 	}
 }
 
 component DemoMode {
 	provides IDemoMode iDemoMode;
-	requires external ITimer iTimer;
+	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
-	
+
 	behaviour {
-		enum RgbState { Red, Green, Blue };
-		enum DemoState { Started, Stopping, Stopped };
-		RgbState rgbState = RgbState.Red;
-		DemoState demoState = DemoState.Stopped;
-		bool timeoutPending = false;
-		
+		enum State { Red, Green, Blue };
+		State state = State.Red;
+		bool isRunning = false;
+
 		on iDemoMode.start(): {
-			[demoState == DemoState.Stopped] {
-				demoState = DemoState.Started;
+			[!isRunning] {
+				isRunning = true;
 				iRGBLed.setRed();
 				iTimer.start($1000$);
 			}
-		} 
-		
+		}
+
 		on iDemoMode.stop(): {
-			[demoState == DemoState.Started] blocking {
+			[isRunning] {
+				isRunning = false;
+				iTimer.cancel();
 				iRGBLed.dim();
-				timeoutPending = iTimer.cancel();
-				if(timeoutPending) {
-					demoState = DemoState.Stopping;
-				}
-				else {
-					demoState = DemoState.Stopped;
-					iDemoMode.reply();
-				}
 			}
 		}
-		
+
 		on iTimer.timeout(): {
-			[demoState == DemoState.Started] {
-				[rgbState == RgbState.Red] {
-					rgbState = RgbState.Green;
+			[isRunning] {
+				[state == State.Red] {
+					state = State.Green;
 					iRGBLed.setGreen();
 					iTimer.start($1000$);
-				} 
-				
-				[rgbState == RgbState.Green] {
-					rgbState = RgbState.Blue;
+				}
+
+				[state == State.Green] {
+					state = State.Blue;
 					iRGBLed.setBlue();
 					iTimer.start($1000$);
 				}
-				
-				[rgbState == RgbState.Blue] {
-					rgbState = RgbState.Red;
+
+				[state == State.Blue] {
+					state = State.Red;
 					iRGBLed.setRed();
 					iTimer.start($1000$);
-				} 
+				}
 			}
-			[demoState == DemoState.Stopping] {
-				demoState = DemoState.Stopped;
-				timeoutPending = false;
-				iDemoMode.reply();
-			}
-			[demoState == DemoState.Stopped] { /* DemoState is stopped, timeouts can be safely ignored */ }
 		}
 	}
 }

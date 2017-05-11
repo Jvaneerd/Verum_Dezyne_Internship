@@ -4,7 +4,7 @@ interface IMixMode {
 	in void start();
 	in void stop();
 	in void toggle();
-	
+
 	behaviour {
 		bool isRunning = false;
 		on start: {
@@ -20,12 +20,12 @@ interface IMixMode {
 			[isRunning] {}
 		}
 	}
-} 
+}
 
 interface IPotMeter {
 	in void start();
 	in void stop();
-	
+
 	out void valueChanged(Integer newValue);
 	behaviour {
 		bool isRunning = false;
@@ -37,7 +37,7 @@ interface IPotMeter {
 			[!isRunning] illegal;
 			[isRunning] isRunning = false;
 		}
-		
+
 		[isRunning] {
 			on optional: {
 				valueChanged;
@@ -55,14 +55,14 @@ component MixMode {
 		enum State { MixingRed, MixingGreen, MixingBlue };
 		bool isRunning = false;
 		State state = State.MixingRed;
-		
+
 		on iMixMode.start(): {
-			[!isRunning] { 
+			[!isRunning] {
 				iPotMeter.start();
 				isRunning = true;
 			}
-		} 
-		
+		}
+
 		[isRunning] {
 			on iMixMode.toggle(): {
 				[state == State.MixingRed] {
@@ -74,20 +74,20 @@ component MixMode {
 				[state == State.MixingBlue] {
 					state = State.MixingRed;
 				}
-			} 
-			
+			}
+
 			on iPotMeter.valueChanged(newValue): {
 				[state == State.MixingRed] {
 					iRGBLed.setSpecificRed(newValue);
-				} 
+				}
 				[state == State.MixingGreen] {
 					iRGBLed.setSpecificGreen(newValue);
-				} 
+				}
 				[state == State.MixingBlue] {
 					iRGBLed.setSpecificBlue(newValue);
 				}
-			} 
-			
+			}
+
 			on iMixMode.stop(): {
 				iPotMeter.stop();
 				isRunning = false;

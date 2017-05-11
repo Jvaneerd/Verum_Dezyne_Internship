@@ -1,46 +1,24 @@
 interface ITimer {
 	extern long_integer $long$;
 	in void start(long_integer ms);
-	in bool cancel();
+	in void cancel();
 	out void timeout();
-	
+
 	behaviour {
-		enum State { Idle, Running, Expired };
+		enum State { Idle, Running };
 		State state = State.Idle;
-		bool timeoutFired = false;
-		
-		on start: {
-			[state == State.Idle] state = State.Running;
-			[state == State.Running] illegal;
-			[state == State.Expired] {
-				[timeoutFired] state = State.Running;
-				[!timeoutFired] illegal;
-			}
+
+		[state == State.Idle] {
+			on start: state = State.Running;
+			on cancel: {}
 		}
-		
-		on cancel: {
-			[state == State.Idle] reply(false);
-			[state == State.Running] {
+
+		[state == State.Running] {
+			on start: illegal;
+			on cancel: state = State.Idle;
+			on inevitable: {
 				state = State.Idle;
-				reply(false);
-			}
-			[state == State.Expired] {
-				[timeoutFired] {
-					state = State.Idle;
-					reply(true);
-				}
-				[!timeoutFired] {
-					state = State.Idle;
-					reply(false);
-				}
-			}
-		}
-		
-		on inevitable: {
-			[state == State.Running] {
 				timeout;
-				timeoutFired = true;
-				state = State.Expired;
 			}
 		}
 	}

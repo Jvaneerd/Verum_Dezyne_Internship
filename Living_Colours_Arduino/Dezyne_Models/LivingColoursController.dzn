@@ -7,20 +7,20 @@ interface IController {
 	in void begin();
 	in void mixButtonPressed();
 	in void presetButtonPressed();
-	
+
 	behaviour {
 		bool initialized = false;
-		
+
 		on begin: {
 			[!initialized] initialized = true;
 			[initialized] illegal;
 		}
-		
+
 		[initialized] {
 			on mixButtonPressed: {}
 			on presetButtonPressed: {}
 		}
-		
+
 		[!initialized] {
 			on mixButtonPressed: illegal;
 			on presetButtonPressed: illegal;
@@ -33,21 +33,21 @@ component Controller {
 	requires IDemoMode iDemoMode;
 	requires IMixMode iMixMode;
 	requires IPresetMode iPresetMode;
-	
+
 	behaviour {
 		enum State { Demo, Mixing, Presets };
 		bool initialized = false;
-		
+
 		State state = State.Demo;
-		
+
 		on iController.begin(): {
 			[initialized] illegal;
 			[!initialized] {
-				iDemoMode.start();
 				initialized = true;
+				iDemoMode.start();
 			}
 		}
-		
+
 		[initialized] {
 			on iController.mixButtonPressed(): {
 				[state == State.Mixing] {
@@ -57,14 +57,14 @@ component Controller {
 					iDemoMode.stop();
 					iMixMode.start();
 					state = State.Mixing;
-				} 
+				}
 				[state == State.Presets] {
 					iPresetMode.stop();
 					iMixMode.start();
 					state = State.Mixing;
 				}
-			} 
-		
+			}
+
 			on iController.presetButtonPressed(): {
 				[state == State.Presets] {
 					iPresetMode.toggle();
@@ -73,7 +73,7 @@ component Controller {
 					iDemoMode.stop();
 					iPresetMode.start();
 					state = State.Presets;
-				} 
+				}
 				[state == State.Mixing] {
 					iMixMode.stop();
 					iPresetMode.start();
@@ -81,7 +81,7 @@ component Controller {
 				}
 			}
 		}
-		
+
 	}
 }
 
@@ -90,15 +90,15 @@ component LivingColours {
 	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
 	requires IPotMeter iPotMeter;
-	
+
 	system {
 		Controller controller;
 		DemoMode demoMode;
 		MixMode mixMode;
 		PresetMode presetMode;
-		PresetList presetList;
 		RGBLedMux rgbLedMux;
-		
+		PresetList presetList;
+
 		iController<=>controller.iController;
 		iRGBLed<=>rgbLedMux.iPhysicalLed;
 		controller.iDemoMode<=>demoMode.iDemoMode;
