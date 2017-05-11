@@ -48,8 +48,8 @@ interface IPotMeter {
 
 component MixMode {
 	provides IMixMode iMixMode;
-	requires IPotMeter iPotMeter;
 	requires IRGBLed iRGBLed;
+	requires IPotMeter iPotMeter;
 
 	behaviour {
 		enum State { MixingRed, MixingGreen, MixingBlue };

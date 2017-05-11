@@ -38,8 +38,8 @@ component PresetList {
 
 component PresetMode {
 	provides IPresetMode iPresetMode;
-	requires IPresetList iPresetList;
 	requires IRGBLed iRGBLed;
+	requires IPresetList iPresetList;
 
 	behaviour {
 		bool isRunning = false;

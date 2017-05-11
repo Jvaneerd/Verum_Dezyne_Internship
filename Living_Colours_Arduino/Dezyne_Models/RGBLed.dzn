@@ -30,9 +30,9 @@ interface IRGBLed {
 }
 
 component RGBLedMux {
+	provides IRGBLed iDemoLed;
 	provides IRGBLed iPresetLed;
 	provides IRGBLed iMixLed;
-	provides IRGBLed iDemoLed;
 
 	requires IRGBLed iPhysicalLed;
 

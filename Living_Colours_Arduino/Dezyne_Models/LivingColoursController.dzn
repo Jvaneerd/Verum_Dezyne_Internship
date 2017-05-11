@@ -31,8 +31,8 @@ interface IController {
 component Controller {
 	provides IController iController;
 	requires IDemoMode iDemoMode;
-	requires IMixMode iMixMode;
 	requires IPresetMode iPresetMode;
+	requires IMixMode iMixMode;
 
 	behaviour {
 		enum State { Demo, Mixing, Presets };
