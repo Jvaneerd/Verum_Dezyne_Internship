@@ -5,7 +5,6 @@
 
 #include <dzn/runtime.hh>
 #include <dzn/locator.hh>
-#include <dzn/pump.hh>
 #include "AlarmSystem.hh"
 
 int
@@ -17,7 +16,6 @@ main(int argc, char* argv[])
   loc.set(rt);
 
   AlarmSystem as(loc);
-  as.dzn_meta.name = "AlarmSystem";
 
   as.check_bindings();
 
