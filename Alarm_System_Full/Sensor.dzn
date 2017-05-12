@@ -26,3 +26,7 @@ interface ISensor {
 		}
 	}
 }
+
+component Sensor {
+	provides ISensor iSensor;
+}

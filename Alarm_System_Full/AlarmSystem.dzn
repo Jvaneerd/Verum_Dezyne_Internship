@@ -7,20 +7,20 @@ import Timer.dzn;
 
 component AlarmSystem {
 	provides IController iController;
-	requires IPWManager iPWManager;
 	requires ITimer iTimer;
-	requires ISensor iSensor;
 	
 	system {
 		Controller controller;
 		LED led;
 		Siren siren;
+		PWManager pwManager;
+		Sensor sensor;
 		
 		iController <=> controller.iController;
-		controller.iLED <=> led.iLed;
-		controller.iPWManager <=> iPWManager;
+		controller.iLed <=> led.iLed;
+		controller.iPWManager <=> pwManager.iPWManager;
 		controller.iTimer <=> iTimer;
 		controller.iSiren <=> siren.iSiren;
-		controller.iSensor <=> iSensor;
+		controller.iSensor <=> sensor.iSensor;
 	}
 }

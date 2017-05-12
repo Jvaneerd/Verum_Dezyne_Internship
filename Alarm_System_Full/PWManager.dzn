@@ -8,3 +8,7 @@ interface IPWManager {
 		on verifyPassword: reply(false);
 	}
 }
+
+component PWManager {
+	provides IPWManager iPWManager;
+}
