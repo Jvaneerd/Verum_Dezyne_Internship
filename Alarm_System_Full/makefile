@@ -6,6 +6,8 @@ LDFLAGS = -lpthread
 RM = rm -rf
 TARGET = dznpi
 VERSION = 2.3.3
+SYSTEMNAME = AlarmSystem
+SYSTEMFILE = $(SYSTEMNAME).dzn
 CURRENT := $(shell dzn query | grep '*' | sed 's,\* ,,')
 
 ifneq ($(VERSION),$(CURRENT))
@@ -38,6 +40,7 @@ $(RUNTIME)/dzn:
 
 generate: $(wildcard *.dzn)
 	for f in $^; do dzn -v code --version=$(VERSION) -l c++ -o $(SRC) --depends=.d $$f; done
+	dzn -v code --version=$(VERSION) -l c++ -o $(SRC) -s $(SYSTEMNAME) $(SYSTEMFILE) --depends=.d
 	touch $@
 
 clean:

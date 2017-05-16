@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <unistd.h>
 #include <signal.h>
@@ -18,10 +19,12 @@ int
 main(int argc, char* argv[])
 {
   dzn::locator loc;
-  dzn::pump pump;
   dzn::runtime rt;
+  std::ofstream logfile("log.txt");
+  std::ostream outstream(nullptr);
+  outstream.rdbuf(logfile.rdbuf());
 
-  loc.set(rt).set(pump);
+  loc.set(rt).set(outstream);
 
   AlarmSystem as(loc);
   as.dzn_meta.name = "AlarmSystem";

@@ -4,8 +4,6 @@
 #include <wiringPi.h>
 #include "Sensor.hh"
 
-#include <iostream>
-
 const int DEBOUNCE_TIME = 50;
 const int PIN_SENSOR = 16;
 
