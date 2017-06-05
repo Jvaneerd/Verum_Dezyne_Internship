@@ -13,11 +13,6 @@ void rgb_SetGreen(IRGBLed* self);
 void rgb_SetBlue(IRGBLed* self);
 
 void rgb_Dim(IRGBLed* self);
-
-void rgb_SetSpecificRed(IRGBLed* self, int value);
-void rgb_SetSpecificGreen(IRGBLed* self, int value);
-void rgb_SetSpecificBlue(IRGBLed* self, int value);
-
 void rgb_SetColour(IRGBLed* self, Colour colour);
 
 #endif //RGBLED_H

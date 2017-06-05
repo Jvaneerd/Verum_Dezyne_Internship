@@ -4,7 +4,7 @@
 #include <dzn/locator.h>
 
 #include "rgbLed.h"
-#include "../Generated/LivingColours.h"
+#include "../Generated/LivingColoursSystem.h"
 #include "Timer.h"
 #include "PotMeter.h"
 
@@ -37,16 +37,13 @@ int main() {
   runtime dezyne_runtime;
   runtime_init(&dezyne_runtime);
 
-  LivingColours lc;
-  LivingColours_init(&lc, 0);
+  LivingColoursSystem lc;
+  LivingColoursSystem_init(&lc, 0);
 
   lc.iRGBLed->in.setRed = rgb_SetRed;
   lc.iRGBLed->in.setGreen = rgb_SetGreen;
   lc.iRGBLed->in.setBlue = rgb_SetBlue;
   lc.iRGBLed->in.dim = rgb_Dim;
-  lc.iRGBLed->in.setSpecificRed = rgb_SetSpecificRed;
-  lc.iRGBLed->in.setSpecificGreen = rgb_SetSpecificGreen;
-  lc.iRGBLed->in.setSpecificBlue = rgb_SetSpecificBlue;
   lc.iRGBLed->in.setColour = rgb_SetColour;
 
   lc.iTimer->in.start = tm_StartTimer;

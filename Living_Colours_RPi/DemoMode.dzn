@@ -50,7 +50,7 @@ component DemoMode {
 		on iDemoMode.start(): {
 			[!isRunning] {
 				setRed();
-				iTimer.start($1$);
+				iTimer.start($1000$);
 				isRunning = true;
 			}
 		}
@@ -68,19 +68,19 @@ component DemoMode {
 				[rgbState == RgbState.Red] {
 					rgbState = RgbState.Green;
 					setGreen();
-					iTimer.start($30000$);
+					iTimer.start($1000$);
 				}
 
 				[rgbState == RgbState.Green] {
 					rgbState = RgbState.Blue;
 					setBlue();
-					iTimer.start($30000$);
+					iTimer.start($1000$);
 				}
 
 				[rgbState == RgbState.Blue] {
 					rgbState = RgbState.Red;
 					setRed();
-					iTimer.start($30000$);
+					iTimer.start($1000$);
 				}
 			}
 		}

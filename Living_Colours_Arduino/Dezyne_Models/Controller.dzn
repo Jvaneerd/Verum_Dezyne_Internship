@@ -1,29 +1,25 @@
-import RGBLed.dzn;
+import Timer.dzn;
+import RgbLed.dzn;
 import DemoMode.dzn;
-import MixMode.dzn;
-import PresetMode.dzn;
+import ToggleAbles.dzn;
 
 interface IController {
-	in void begin();
 	in void mixButtonPressed();
 	in void presetButtonPressed();
-
-	behaviour {
-		bool initialized = false;
-
-		on begin: {
-			[!initialized] initialized = true;
-			[initialized] illegal;
-		}
-
-		[initialized] {
-			on mixButtonPressed: {}
-			on presetButtonPressed: {}
-		}
-
-		[!initialized] {
+	in void begin();
+	
+	behaviour {	
+		bool isRunning = false;
+		[!isRunning] {
+			on begin: isRunning = true;
 			on mixButtonPressed: illegal;
 			on presetButtonPressed: illegal;
+		}
+		
+		[isRunning] {
+			on begin: illegal;
+			on mixButtonPressed: {}
+			on presetButtonPressed: {}
 		}
 	}
 }
@@ -31,8 +27,8 @@ interface IController {
 component Controller {
 	provides IController iController;
 	requires IDemoMode iDemoMode;
-	requires IPresetMode iPresetMode;
-	requires IMixMode iMixMode;
+	requires IToggleAble iPresetMode;
+	requires IToggleAble iMixMode;
 
 	behaviour {
 		enum State { Demo, Mixing, Presets };
@@ -85,30 +81,31 @@ component Controller {
 	}
 }
 
-component LivingColours {
+component LivingColoursSystem {
 	provides IController iController;
 	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
 	requires IPotMeter iPotMeter;
-
+	
 	system {
 		Controller controller;
 		DemoMode demoMode;
-		MixMode mixMode;
 		PresetMode presetMode;
+		MixMode mixMode;
+		ColourSupplier colourSupplier;
 		RGBLedMux rgbLedMux;
-		PresetList presetList;
-
+		
 		iController<=>controller.iController;
-		iRGBLed<=>rgbLedMux.iPhysicalLed;
 		controller.iDemoMode<=>demoMode.iDemoMode;
-		controller.iMixMode<=>mixMode.iMixMode;
-		controller.iPresetMode<=>presetMode.iPresetMode;
 		demoMode.iTimer<=>iTimer;
-		demoMode.iRGBLed<=>rgbLedMux.iDemoLed;
-		presetMode.iPresetList<=>presetList.iPresetList;
-		presetMode.iRGBLed<=>rgbLedMux.iPresetLed;
+		controller.iPresetMode<=>presetMode.iPresetMode;
+		presetMode.iColourSupplier<=>colourSupplier.iColourSupplier;
+		controller.iMixMode<=>mixMode.iMixMode;
 		mixMode.iPotMeter<=>iPotMeter;
-		mixMode.iRGBLed<=>rgbLedMux.iMixLed;
+		
+		rgbLedMux.demo<=>demoMode.iRGBLed;
+		rgbLedMux.preset<=>presetMode.iRGBLed;
+		rgbLedMux.mix<=>mixMode.iRGBLed;
+		rgbLedMux.outLed<=>iRGBLed;
 	}
 }

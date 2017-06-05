@@ -10,7 +10,7 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "../Generated/PresetList.h"
+#include "../Generated/ColourSupplier.h"
 
 #include <dzn/locator.h>
 #include <dzn/runtime.h>
@@ -25,7 +25,7 @@ Colour presets[] = {  { .red = 255, .green = 255, .blue = 0 }, //Yellow
 
 int currentPreset = 0;
 
-static void iPresetList_toggle(PresetList* self) {
+static void iColourSupplier_toggle(IColourSupplier* self) {
 	(void)self;
   {
 	  currentPreset++;
@@ -35,17 +35,17 @@ static void iPresetList_toggle(PresetList* self) {
 	}
 }
 
-static void iPresetList_getPreset(PresetList* self,Colour* colour) {
+static void iColourSupplier_getColour(IColourSupplier* self,Colour* colour) {
 	(void)self;
 	{
     *colour = presets[currentPreset];
 	}
 }
 
-void PresetList_init (PresetList* self, locator* dezyne_locator) {
+void ColourSupplier_init (ColourSupplier* self, locator* dezyne_locator) {
 	runtime_info_init(&self->dzn_info, dezyne_locator);
 	self->dzn_info.performs_flush = false;
 
-	self->iPresetList->in.toggle = iPresetList_toggle;
-	self->iPresetList->in.getPreset = iPresetList_getPreset;
+	self->iColourSupplier->in.toggle = iColourSupplier_toggle;
+	self->iColourSupplier->in.getColour = iColourSupplier_getColour;
 }
