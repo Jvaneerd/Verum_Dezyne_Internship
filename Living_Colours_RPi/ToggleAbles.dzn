@@ -1,0 +1,126 @@
+import RgbLed.dzn;
+
+interface IToggleAble {
+	in void start();
+	in void stop();
+	in void toggle();
+	
+	behaviour {
+		bool isRunning = false;
+		
+		[!isRunning] {
+			on start: isRunning = true;
+			on stop: illegal;
+			on toggle: illegal;
+		}
+		[isRunning] {
+			on start: illegal;
+			on stop: isRunning = false;
+			on toggle: {}
+		}
+	}
+}
+
+interface IColourSupplier {
+	in void toggle();
+	in void getColour(out Colour colour);
+	
+	behaviour {
+		on toggle: {}
+		on getColour: {}
+	}
+}
+
+component ColourSupplier {
+	provides IColourSupplier iColourSupplier;
+}
+
+component PresetMode {
+	provides IToggleAble iPresetMode;
+	requires IRGBLed iRGBLed;
+	requires IColourSupplier iColourSupplier;
+	
+	behaviour {
+		bool isRunning = false;
+		
+		[!isRunning] {
+			on iPresetMode.start(): {
+				Colour tempColour;
+				iColourSupplier.getColour(tempColour);
+				iRGBLed.setColour(tempColour);
+				isRunning = true;
+			}
+		}
+		
+		[isRunning] {
+			on iPresetMode.toggle(): {
+				iColourSupplier.toggle();
+				Colour tempColour;
+				iColourSupplier.getColour(tempColour);
+				iRGBLed.setColour(tempColour);
+			}
+			
+			on iPresetMode.stop(): {
+				iRGBLed.dim();
+				isRunning = false;
+			}
+		}
+	}
+}
+
+interface IPotMeter {
+	in void start();
+	in void stop();
+	
+	out void valueChanged(Integer val);
+	
+	behaviour {
+		bool isRunning = false;
+		
+		[!isRunning] {
+			on start: isRunning = true;
+			on stop: illegal;
+		}
+		[isRunning] {
+			on start: illegal;
+			on stop: isRunning = false;
+			on optional: valueChanged;
+		}
+	}
+}
+
+component MixMode {
+	provides IToggleAble iMixMode;
+	requires IRGBLed iRGBLed;
+	requires IPotMeter iPotMeter;
+	behaviour {
+		enum Mixing { Red, Green, Blue };
+		bool isRunning = false;
+		Mixing mix = Mixing.Red;
+		
+		[!isRunning] {
+			on iMixMode.start(): {
+				iPotMeter.start();
+				isRunning = true;
+			}
+		}
+		
+		[isRunning] {
+			on iMixMode.stop(): {
+				iPotMeter.stop();
+				iRGBLed.dim();
+				isRunning = false;
+			}
+			on iMixMode.toggle(): {
+				[mix == Mixing.Red] mix = Mixing.Green;
+				[mix == Mixing.Green] mix = Mixing.Blue;
+				[mix == Mixing.Blue] mix = Mixing.Red;
+			}
+			on iPotMeter.valueChanged(value): {
+				[mix == Mixing.Red] iRGBLed.setRed(value);
+				[mix == Mixing.Green] iRGBLed.setGreen(value);
+				[mix == Mixing.Blue] iRGBLed.setBlue(value);
+			}
+		}
+	}
+}

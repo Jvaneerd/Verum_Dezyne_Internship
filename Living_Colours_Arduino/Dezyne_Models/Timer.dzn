@@ -14,7 +14,10 @@ interface ITimer {
 			[state == State.Running] illegal;
 			[state == State.Expired] {
 				[timeoutFired] state = State.Running;
+<<<<<<< Updated upstream
 				[!timeoutFired] illegal;
+=======
+>>>>>>> Stashed changes
 			}
 		}
 		
@@ -30,8 +33,12 @@ interface ITimer {
 					reply(true);
 				}
 				[!timeoutFired] {
+<<<<<<< Updated upstream
 					state = State.Idle;
 					reply(false);
+=======
+					illegal;
+>>>>>>> Stashed changes
 				}
 			}
 		}

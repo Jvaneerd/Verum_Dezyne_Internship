@@ -1,0 +1,36 @@
+extern Colour $Colour$;
+extern Integer $int$;
+
+interface IRGBLed {
+	in void setRed(Integer value);
+	in void setGreen(Integer value);
+	in void setBlue(Integer value);
+	in void setColour(Colour colour);
+	
+	in void dim();
+	
+	behaviour {
+		on setRed: {}
+		on setGreen: {}
+		on setBlue: {}
+		on setColour: {}
+		
+		on dim: {}
+	}
+}
+
+component RGBLedMux {
+	provides IRGBLed demo;
+	provides IRGBLed preset;
+	provides IRGBLed mix;
+	
+	requires IRGBLed outLed;
+	
+	behaviour {
+		on preset.setRed(v), mix.setRed(v), demo.setRed(v): outLed.setRed(v);
+		on preset.setGreen(v), mix.setGreen(v), demo.setGreen(v): outLed.setGreen(v);
+		on preset.setBlue(v), mix.setBlue(v), demo.setBlue(v): outLed.setBlue(v);
+		on preset.dim(), mix.dim(), demo.dim(): outLed.dim();
+		on preset.setColour(c), mix.setColour(c), demo.setColour(c): outLed.setColour(c);
+	}
+}

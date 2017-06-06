@@ -1,29 +1,25 @@
-import RGBLed.dzn;
+import Timer.dzn;
+import RgbLed.dzn;
 import DemoMode.dzn;
-import MixMode.dzn;
-import PresetMode.dzn;
+import ToggleAbles.dzn;
 
 interface IController {
-	in void begin();
 	in void mixButtonPressed();
 	in void presetButtonPressed();
+	in void begin();
 	
-	behaviour {
-		bool initialized = false;
-		
-		on begin: {
-			[!initialized] initialized = true;
-			[initialized] illegal;
-		}
-		
-		[initialized] {
-			on mixButtonPressed: {}
-			on presetButtonPressed: {}
-		}
-		
-		[!initialized] {
+	behaviour {	
+		bool isRunning = false;
+		[!isRunning] {
+			on begin: isRunning = true;
 			on mixButtonPressed: illegal;
 			on presetButtonPressed: illegal;
+		}
+		
+		[isRunning] {
+			on begin: illegal;
+			on mixButtonPressed: {}
+			on presetButtonPressed: {}
 		}
 	}
 }
@@ -31,11 +27,8 @@ interface IController {
 component Controller {
 	provides IController iController;
 	requires IDemoMode iDemoMode;
-	requires IMixMode iMixMode;
-<<<<<<< Updated upstream
-	requires IPresetMode iPresetMode;
-=======
->>>>>>> Stashed changes
+	requires IToggleAble iPresetMode;
+	requires IToggleAble iMixMode;
 	
 	behaviour {
 		enum State { Demo, Mixing, Presets };
@@ -46,8 +39,8 @@ component Controller {
 		on iController.begin(): {
 			[initialized] illegal;
 			[!initialized] {
-				bool demoModeStarted = iDemoMode.start();
-				initialized = demoModeStarted;
+				iDemoMode.start();
+				initialized = true;
 			}
 		}
 		
@@ -88,7 +81,7 @@ component Controller {
 	}
 }
 
-component LivingColours {
+component LivingColoursSystem {
 	provides IController iController;
 	requires ITimer iTimer;
 	requires IRGBLed iRGBLed;
@@ -97,21 +90,22 @@ component LivingColours {
 	system {
 		Controller controller;
 		DemoMode demoMode;
-		MixMode mixMode;
 		PresetMode presetMode;
-		PresetList presetList;
+		MixMode mixMode;
+		ColourSupplier colourSupplier;
 		RGBLedMux rgbLedMux;
 		
 		iController<=>controller.iController;
-		iRGBLed<=>rgbLedMux.iPhysicalLed;
 		controller.iDemoMode<=>demoMode.iDemoMode;
-		controller.iMixMode<=>mixMode.iMixMode;
-		controller.iPresetMode<=>presetMode.iPresetMode;
 		demoMode.iTimer<=>iTimer;
-		demoMode.iRGBLed<=>rgbLedMux.iDemoLed;
-		presetMode.iPresetList<=>presetList.iPresetList;
-		presetMode.iRGBLed<=>rgbLedMux.iPresetLed;
+		controller.iPresetMode<=>presetMode.iPresetMode;
+		presetMode.iColourSupplier<=>colourSupplier.iColourSupplier;
+		controller.iMixMode<=>mixMode.iMixMode;
 		mixMode.iPotMeter<=>iPotMeter;
-		mixMode.iRGBLed<=>rgbLedMux.iMixLed;
+		
+		rgbLedMux.demo<=>demoMode.iRGBLed;
+		rgbLedMux.preset<=>presetMode.iRGBLed;
+		rgbLedMux.mix<=>mixMode.iRGBLed;
+		rgbLedMux.outLed<=>iRGBLed;
 	}
 }
