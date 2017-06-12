@@ -20,11 +20,8 @@ main(int argc, char* argv[])
 {
   dzn::locator loc;
   dzn::runtime rt;
-  std::ofstream logfile("log.txt");
-  std::ostream outstream(nullptr);
-  outstream.rdbuf(logfile.rdbuf());
 
-  loc.set(rt).set(outstream);
+  loc.set(rt);
 
   AlarmSystem as(loc);
   as.dzn_meta.name = "AlarmSystem";
