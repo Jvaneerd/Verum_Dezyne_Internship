@@ -1,17 +1,17 @@
 interface ITimer {
-	extern Long_Integer $long$;
+	extern long_integer $long$;
 	enum State { Idle, Running, Stopping };
-	in void start(Long_Integer milliseconds);
+	in void start(long_integer milliseconds);
 	in void cancel();
-	out void canceled();
 	out void timeout();
+	out void cancelled();
 
 	behaviour {
 		State state = State.Idle;
 
 		[state.Idle] {
 			on start: state = State.Running;
-			on cancel: { canceled; }
+			on cancel: { cancelled; }
 		}
 
 		[state.Running] {
@@ -22,13 +22,13 @@ interface ITimer {
 				timeout;
 			}
 		}
-		
+
 		[state.Stopping] {
 			on start: illegal;
 			on cancel: illegal;
 			on inevitable: {
 				state = State.Idle;
-				canceled;
+				cancelled;
 			}
 		}
 	}
@@ -37,37 +37,37 @@ interface ITimer {
 component RobustTimer {
 	provides ITimer iTimer;
 	requires external ITimer ext_iTimer;
-	
+
 	behaviour {
 		enum State { Idle, Running, Stopping };
 		State state = State.Idle;
-		
-		on iTimer.start(milliseconds): {
+
+		on iTimer.start(ms): {
 			[state.Idle] {
-				ext_iTimer.start(milliseconds);
+				ext_iTimer.start(ms);
 				state = State.Running;
 			}
 		}
-		
+
 		on iTimer.cancel(): {
 			[state.Running] {
 				ext_iTimer.cancel();
 				state = State.Stopping;
 			}
-			[state.Idle] { iTimer.canceled(); }
+			[state.Idle] { iTimer.cancelled(); }
 		}
-		
+
 		on ext_iTimer.timeout(): {
 			[state.Running] {
 				iTimer.timeout();
 				state = State.Idle;
 			}
-			[otherwise] {}
+			[state.Stopping] { /* discard */ }
 		}
-		
-		on ext_iTimer.canceled(): {
+
+		on ext_iTimer.cancelled(): {
 			[state.Stopping] {
-				iTimer.canceled();
+				iTimer.cancelled();
 				state = State.Idle;
 			}
 		}

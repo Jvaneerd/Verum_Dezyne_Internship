@@ -30,7 +30,7 @@ main(int argc, char* argv[])
   as.dzn_meta.name = "AlarmSystem";
 
   as.iTimer.in.start = [] (int ms) { alarm(ms/1000); }; //ITimer contract is in milliseconds, but alarm is in seconds
-  as.iTimer.in.cancel = [] () { alarm(0); };
+  as.iTimer.in.cancel = [&] () { alarm(0); as.iTimer.out.cancelled(); };
   timeout = as.iTimer.out.timeout;
   signal(SIGALRM, sigalrm_handler);
 
