@@ -21,7 +21,7 @@ component Controller {
   requires ISensor iSensor;
 
   behaviour {
-    enum State { Unarmed, Armed, Alarming };
+    enum State { Unarmed, Armed, Alarming, Rearming };
     State state = State.Unarmed;
 
     [state.Unarmed] {
@@ -53,11 +53,16 @@ component Controller {
       }
       on iTimer.timeout(): illegal;
     }
+    [state.Rearming] {
+    	on iController.passwordEntered(pw): {}
+    	on iSensor.triggered(): {}
+    	on iTimer.cancelled(): state = State.Armed;
+    }
     [state.Alarming] {
       on iController.passwordEntered(pw): {
       	bool valid = iPWManager.verifyPassword(pw);
       	if(valid) {
-	        state = State.Armed;
+	        state = State.Rearming;
 	        iLed.setYellow();
 	        iSiren.turnOff();
 	        iTimer.cancel();

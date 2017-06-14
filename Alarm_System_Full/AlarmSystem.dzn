@@ -15,12 +15,14 @@ component AlarmSystem {
 		Siren siren;
 		PWManager pwManager;
 		Sensor sensor;
+		RobustTimer rbTimer;
 		
 		iController <=> controller.iController;
 		controller.iLed <=> led.iLed;
 		controller.iPWManager <=> pwManager.iPWManager;
-		controller.iTimer <=> iTimer;
+		controller.iTimer <=> rbTimer.iTimer;
 		controller.iSiren <=> siren.iSiren;
 		controller.iSensor <=> sensor.iSensor;
+		rbTimer.ext_iTimer <=> iTimer;
 	}
 }
