@@ -7,7 +7,7 @@ import Timer.dzn;
 
 component AlarmSystem {
 	provides IController iController;
-	requires ITimer iTimer;
+	requires AsyncITimer iTimer;
 	
 	system {
 		Controller controller;
